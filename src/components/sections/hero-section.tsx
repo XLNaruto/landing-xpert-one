@@ -54,7 +54,7 @@ export default function HeroSection() {
                   "h-11 rounded-full px-6 text-base",
                 )}
             >
-              Book a demo
+              Book a live demo
               <ArrowRight aria-hidden />
             </Link>
             <Link
@@ -64,7 +64,7 @@ export default function HeroSection() {
                 "h-11 rounded-full px-6 text-base",
               )}
             >
-              See pricing
+              See pricing plans
             </Link>
           </div>
         </FadeIn>

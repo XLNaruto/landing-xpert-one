@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, useSyncExternalStore } from "react"
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react"
 import { A11y, Autoplay, Keyboard } from "swiper/modules"
 import { Swiper, SwiperSlide } from "swiper/react"
@@ -29,8 +29,14 @@ function initials(name: string) {
  * slides and forward motion stalls at the end, so the quote list is repeated
  * until there are enough. Repeats are what make the wrap seamless: the "first"
  * card arriving after the last is a genuine slide, not a jump back.
+ *
+ * The repeats only appear after hydration. Rendering them server-side put each
+ * quote into the HTML twice, which crawlers read as duplicated page text.
  */
 const MIN_SLIDES = 6
+
+/** A store that never changes: the snapshot alone carries the answer. */
+const subscribeNever = () => () => {}
 
 function padForLoop(items: Testimonial[]) {
   if (items.length === 0 || items.length >= MIN_SLIDES) return items
@@ -39,9 +45,17 @@ function padForLoop(items: Testimonial[]) {
 }
 
 export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
-  const slides = padForLoop(items)
   const [swiper, setSwiper] = useState<SwiperClass | null>(null)
   const [reduceMotion, setReduceMotion] = useState(false)
+  /* false on the server and through the first render, true once hydrated —
+     so the server render carries the quotes exactly once and the padded set
+     only ever exists in the browser. */
+  const mounted = useSyncExternalStore(
+    subscribeNever,
+    () => true,
+    () => false,
+  )
+  const slides = mounted ? padForLoop(items) : items
 
   /* Same contract as the FadeIn wrappers: nothing moves on its own for
      someone who asked the OS for less motion. */
@@ -64,11 +78,14 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
       className="mx-auto w-full max-w-7xl px-5 md:px-8"
     >
       <Swiper
+        /* Re-initialise once the padded slides arrive — Swiper reads the
+           slide count at setup and loop mode can't absorb the change. */
+        key={slides.length}
         onSwiper={setSwiper}
         modules={[Keyboard, A11y, Autoplay]}
         grabCursor
         centeredSlides
-        loop
+        loop={mounted}
         loopAddBlankSlides={false}
         autoplay={
           reduceMotion

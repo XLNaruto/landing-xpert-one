@@ -12,7 +12,7 @@ export const site = {
    */
   seoDescription:
     "HR software for Indian teams: employee records, face-recognition attendance from a phone, and payroll that already knows PF, ESIC, PT and LWF.",
-  url: "https://xpertone.xpertlab.com",
+  url: "https://xpertoneindia.com",
   /** The agency that builds it — credited in the footer. */
   companyUrl: "https://www.xpertlab.com",
   email: "hello@xpertlab.com",

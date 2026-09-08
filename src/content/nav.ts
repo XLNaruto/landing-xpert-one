@@ -14,7 +14,7 @@ export const footerLinks: { title: string; links: NavLink[] }[] = [
       { label: "Employee Management", href: "/#employee-management" },
       { label: "Attendance Management", href: "/#attendance-management" },
       { label: "Payroll Management", href: "/#payroll-management" },
-      { label: "Pricing", href: "/#pricing" },
+      { label: "Plans and pricing", href: "/#pricing" },
     ],
   },
   {
@@ -27,8 +27,8 @@ export const footerLinks: { title: string; links: NavLink[] }[] = [
   {
     title: "Legal",
     links: [
-      { label: "Privacy policy", href: "/privacy" },
-      { label: "Terms of service", href: "/terms" },
+      { label: "Privacy policy", href: "/privacy/" },
+      { label: "Terms of service", href: "/terms/" },
     ],
   },
 ]

@@ -2,6 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRight, Copyright, Mail, MapPin, Phone } from "lucide-react"
 import { Logo } from "@/components/layout/logo"
+import { SocialLinks } from "@/components/layout/social-links"
 import { footerLinks } from "@/content/nav"
 import { site } from "@/content/site"
 
@@ -13,7 +14,7 @@ export function Footer() {
           <div>
             <Logo className="h-9 md:h-11" />
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
-              {site.description}
+              {site.seoDescription}
             </p>
             <ul className="mt-6 space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
@@ -36,8 +37,10 @@ export function Footer() {
           </div>
 
           {footerLinks.map((group) => (
-            <div key={group.title}>
-              <h2 className="text-sm font-semibold">{group.title}</h2>
+            <nav key={group.title} aria-label={group.title}>
+              <p className="text-sm font-semibold text-foreground">
+                {group.title}
+              </p>
               <ul className="mt-4 space-y-3">
                 {group.links.map((link) => {
                   /* Anything off-site opens in a new tab — an anchor, not
@@ -68,8 +71,15 @@ export function Footer() {
                   )
                 })}
               </ul>
-            </div>
+            </nav>
           ))}
+        </div>
+
+        <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+          <p className="text-sm text-muted-foreground">
+            Follow {site.name} for release notes and payroll-compliance updates.
+          </p>
+          <SocialLinks />
         </div>
 
         {/* Bottom bar: copyright with the product mark inline on the left,

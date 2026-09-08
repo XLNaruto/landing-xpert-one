@@ -104,9 +104,13 @@ export default function SolutionsSection() {
                         className="h-4 w-1 shrink-0 rounded-full bg-brand"
                         aria-hidden
                       />
-                      <h4 className="text-xs font-bold tracking-[0.14em] whitespace-nowrap uppercase">
+                      {/* A label on a card, not a level in the document —
+                          as an <h4> it was one of three identical headings
+                          and pushed the heading count past what the page's
+                          word count supports. */}
+                      <p className="text-xs font-bold tracking-[0.14em] whitespace-nowrap uppercase">
                         What&rsquo;s inside
-                      </h4>
+                      </p>
                       <span
                         className="h-px flex-1 bg-linear-to-r from-border to-transparent"
                         aria-hidden

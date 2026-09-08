@@ -115,7 +115,11 @@ src/
 ## Scripts
 
 ```bash
-npm run dev · npm run build · npm run start · npm run lint
+npm run dev        # dev server, development stage
+npm run prod       # dev server, production stage
+npm run build      # static export for https://dev.xpertoneindia.com
+npm run build:prod # static export for https://xpertoneindia.com
+npm run lint
 ```
 
 ## Before finishing any task

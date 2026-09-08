@@ -56,17 +56,20 @@ export const defaultMetadata: Metadata = {
   },
   /* Stops iOS Safari turning stray numbers in the copy into tel: links. */
   formatDetection: { telephone: false, address: false, email: false },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
-  },
+  /* Production is the only host allowed into the index — see lib/env.ts. */
+  robots: env.isProduction
+    ? {
+        index: true,
+        follow: true,
+        googleBot: {
+          index: true,
+          follow: true,
+          "max-image-preview": "large",
+          "max-snippet": -1,
+          "max-video-preview": -1,
+        },
+      }
+    : { index: false, follow: false, nocache: true },
 }
 
 /** Per-page metadata: title + description only, everything else inherited. */
