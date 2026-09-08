@@ -1,5 +1,7 @@
 import { site } from "@/content/site"
+import { JsonLd } from "@/components/seo/json-ld"
 import { pageMetadata } from "@/lib/seo"
+import { breadcrumbSchema, graph } from "@/lib/structured-data"
 
 export const metadata = pageMetadata({
   title: "Terms of service",
@@ -10,6 +12,7 @@ export const metadata = pageMetadata({
 export default function TermsPage() {
   return (
     <article className="section">
+      <JsonLd data={graph(breadcrumbSchema("Terms of service", "/terms/"))} />
       <div className="section-inner max-w-3xl">
         <h1 className="text-3xl font-semibold tracking-tight md:text-4xl">
           Terms of service
