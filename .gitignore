@@ -30,13 +30,10 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
-# ...except the per-stage files and their template: they carry no
-# secrets, only the public host each deployment is built for.
+# Env files (keep the checked-in sample)
+.env
+.env.*
 !.env.sample
-!.env.development
-!.env.production
 
 # vercel
 .vercel

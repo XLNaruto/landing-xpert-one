@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, CheckCircle2 } from "lucide-react"
-import { FadeIn } from "@/components/motion/fade-in"
+import { Reveal } from "@/components/motion/reveal"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { site } from "@/content/site"
@@ -29,23 +29,23 @@ export default function HeroSection() {
       />
 
       <div className="section-inner relative text-center">
-        <FadeIn from="none">
+        <Reveal from="none">
           <p className="eyebrow">Employee · Attendance · Payroll</p>
-        </FadeIn>
+        </Reveal>
 
-        <FadeIn delay={0.05}>
+        <Reveal delay={0.05}>
           <h1 className="mx-auto mt-4 max-w-4xl text-4xl font-semibold tracking-tight text-balance md:text-5xl lg:text-6xl">
             {site.tagline}
           </h1>
-        </FadeIn>
+        </Reveal>
 
-        <FadeIn delay={0.1}>
+        <Reveal delay={0.1}>
           <p className="mx-auto mt-5 max-w-2xl text-base text-pretty text-muted-foreground md:text-lg">
             {site.description}
           </p>
-        </FadeIn>
+        </Reveal>
 
-        <FadeIn delay={0.15}>
+        <Reveal delay={0.15}>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
               href="/#cta"
@@ -67,9 +67,9 @@ export default function HeroSection() {
               See pricing plans
             </Link>
           </div>
-        </FadeIn>
+        </Reveal>
 
-        <FadeIn delay={0.2}>
+        <Reveal delay={0.2}>
           <ul className="mt-7 flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             {proofPoints.map((point) => (
               <li
@@ -81,10 +81,10 @@ export default function HeroSection() {
               </li>
             ))}
           </ul>
-        </FadeIn>
+        </Reveal>
       </div>
 
-      <FadeIn delay={0.1} className="section-inner relative mt-14 md:mt-20">
+      <Reveal delay={0.1} className="section-inner relative mt-14 md:mt-20">
         <div className="relative">
           <div className="relative aspect-16/10 w-full overflow-hidden rounded-xl border border-border bg-card shadow-2xl shadow-foreground/10 md:rounded-2xl">
             <Image
@@ -110,7 +110,7 @@ export default function HeroSection() {
             />
           </div>
         </div>
-      </FadeIn>
+      </Reveal>
 
       {/* `gap-px` over a border-coloured ground draws the grid rules, so they
           stay correct at 2 columns and at 4 without per-cell border classes.

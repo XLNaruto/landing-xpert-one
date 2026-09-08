@@ -1,5 +1,6 @@
 import type { Viewport } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Geist } from "next/font/google"
+import { Analytics } from "@/components/analytics"
 import { Footer } from "@/components/layout/footer"
 import { Header } from "@/components/layout/header"
 import { HashScroll } from "@/components/layout/hash-scroll"
@@ -9,7 +10,6 @@ import { graph, organizationSchema, websiteSchema } from "@/lib/structured-data"
 import "./globals.css"
 
 const sans = Geist({ variable: "--font-sans", subsets: ["latin"] })
-const mono = Geist_Mono({ variable: "--font-mono", subsets: ["latin"] })
 
 export const metadata = defaultMetadata
 
@@ -24,7 +24,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en-IN"
-      className={`${sans.variable} ${mono.variable} h-full scroll-smooth antialiased`}
+      className={`${sans.variable} h-full scroll-smooth antialiased`}
     >
       <body className="flex min-h-full flex-col">
         {/* Site-wide identity: who publishes this and what the site is. Page
@@ -34,6 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   )

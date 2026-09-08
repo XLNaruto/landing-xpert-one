@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   /* No image optimizer in a static export. */
   images: { unoptimized: true },
+  /* Deliberately NOT using experimental.inlineCss to clear the
+     render-blocking-resources audit: React also writes the inlined CSS into
+     the flight payload, so 82 KB of stylesheet landed in the document roughly
+     three times over and the gzipped page went from 32 KB to 73 KB. Two
+     cacheable, parallel, HTTP/2 stylesheet requests cost less than that. */
 };
 
 export default nextConfig;

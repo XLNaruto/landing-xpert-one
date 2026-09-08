@@ -11,7 +11,7 @@ export const site = {
    * terms people actually search for.
    */
   seoDescription:
-    "HR software for Indian teams: employee records, face-recognition attendance from a phone, and payroll that already knows PF, ESIC, PT and LWF.",
+    "HR software for Indian teams: one employee record, face-recognition attendance from any phone, and a payroll run that already knows PF, ESIC, PT and LWF.",
   url: "https://xpertoneindia.com",
   /** The agency that builds it — credited in the footer. */
   companyUrl: "https://www.xpertlab.com",

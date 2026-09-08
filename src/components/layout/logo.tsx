@@ -23,10 +23,10 @@ export function Logo({
       aria-label={`${site.name} — home`}
     >
       <Image
-        src="/media/logos/logo.png"
+        src="/media/logos/logo.webp"
         alt={site.name}
-        width={499}
-        height={182}
+        width={260}
+        height={95}
         priority={priority}
         className={cn("h-8 w-auto md:h-10", className)}
       />

@@ -62,6 +62,11 @@ export const env = {
    */
   isProduction: stage === "production",
   /**
+   * Google Analytics measurement ID (G-XXXXXXXXXX). Unset: no tag is loaded.
+   * Only honoured on the production stage — see components/analytics.tsx.
+   */
+  analyticsId: process.env.NEXT_PUBLIC_GA_ID,
+  /**
    * Where demo requests are POSTed, from the visitor's browser. It ships in
    * the client bundle, so it must be a public, rate-limited intake endpoint —
    * never a private Slack/Zapier webhook. Unset: submissions are logged to the

@@ -91,10 +91,10 @@ export function Footer() {
               {new Date().getFullYear()}
             </span>
             <Image
-              src="/media/logos/logo.png"
+              src="/media/logos/logo.webp"
               alt={site.name}
-              width={499}
-              height={182}
+              width={260}
+              height={95}
               className="h-5 w-auto"
             />
             <span>All Rights Reserved.</span>
