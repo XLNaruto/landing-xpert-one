@@ -16,9 +16,8 @@
 export type Stage = "development" | "production"
 
 /**
- * The host each stage is deployed to. `.env.<stage>` states it explicitly as
- * NEXT_PUBLIC_SITE_URL; this is the fallback for a build that arrives without
- * one, so the output is never left pointing at the wrong domain.
+ * The host each stage is deployed to — the source of truth, since the
+ * `.env.<stage>` files are untracked and a CI build never sees one.
  */
 export const SITE_URLS: Record<Stage, string> = {
   development: "https://dev.xpertoneindia.com",
@@ -49,8 +48,12 @@ function normalise(url: string): string {
 
 const stage = readStage()
 
-/** From `.env.<stage>`; the stage's own host if that build had none. */
-const siteUrl = normalise(process.env.NEXT_PUBLIC_SITE_URL ?? SITE_URLS[stage])
+/**
+ * The stage's host, unless this build explicitly names another one (a preview
+ * served from somewhere else). `||` on purpose: the build scripts pin the
+ * variable to "" when the stage doesn't override it.
+ */
+const siteUrl = normalise(process.env.NEXT_PUBLIC_SITE_URL || SITE_URLS[stage])
 
 export const env = {
   stage,

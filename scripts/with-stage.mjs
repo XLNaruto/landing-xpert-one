@@ -34,13 +34,24 @@ if (command.length === 0) {
 
 const file = `.env.${stage}`
 
-let vars
+/* Optional: `.env.<stage>` is untracked, so CI builds run without one. The
+   hosts live in SITE_URLS in src/lib/env.ts, and the stage is on the command
+   line, so a build has everything it needs. The file only carries the values
+   that can't be committed — the GA ID, the lead endpoint. */
+let vars = {}
 try {
   vars = parseEnv(readFileSync(file, "utf8"))
 } catch {
-  console.error(`with-stage: cannot read ${file}. Copy .env.sample to it.`)
-  process.exit(1)
+  console.log(`with-stage: no ${file}, using ${stage} defaults.`)
 }
+
+/* The command decides the stage — never a stray value in the environment. */
+vars.NEXT_PUBLIC_APP_STAGE = stage
+
+/* Pinned to empty when this stage doesn't name a host, so that the .env
+   file Next loads for itself (always .env.production, whatever the stage)
+   can't substitute the wrong domain. Empty falls back to SITE_URLS[stage]. */
+vars.NEXT_PUBLIC_SITE_URL ??= ""
 
 const child = spawn("./node_modules/.bin/next", command, {
   stdio: "inherit",
