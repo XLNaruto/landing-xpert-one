@@ -1,0 +1,152 @@
+# Template: deploy workflow for the marketing site (static Next.js export).
+#
+# WHERE THIS FILE GOES
+#   Copy to  .github/workflows/deploy-landing.yml  in XLNaruto/landing-xpert-one,
+#   the repo that holds the marketing site. That repo IS the site, so the site
+#   lives at the repository root and SITE_DIR stays '.'.
+#
+# ONE-TIME SETUP
+#   1. Settings -> Environments: `dev` and `prod` (prod with required reviewers).
+#   2. Secret AWS_DEPLOY_ROLE_ARN in each:
+#        dev   arn:aws:iam::473671718877:role/github-landing-dev
+#        prod  arn:aws:iam::473671718877:role/github-landing-prod
+#   3. next.config.js must produce a static export:
+#        output: 'export', trailingSlash: true, images: { unoptimized: true }
+#      and the app needs a not-found page so the export emits /404.html.
+#
+# WHY THIS DIFFERS FROM THE SPA WORKFLOWS
+#   A static export is many real HTML files, not one shell. So:
+#     - the upload is html-last, not assets-first-shell-second
+#     - HTML is uploaded with a short cache; a stale page is a stale PAGE here,
+#       not just a stale bootstrap
+#     - the invalidation is "/*", because any route's HTML may have changed
+#   Getting this wrong shows up as Google indexing a page you deleted.
+
+name: Deploy landing
+
+on:
+  # NO `paths` filter: the landing site is its own repository, so every push to
+  # main is a change to the site. A path filter here (`apps/landing/**`, as when
+  # the site was expected to be a folder of the api monorepo) matches nothing at
+  # a repository root — the workflow would simply never run, with no error and no
+  # skipped-run entry to notice.
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        type: choice
+        required: true
+        default: dev
+        options: [dev, prod]
+
+concurrency:
+  group: deploy-landing-${{ github.event.inputs.environment || 'dev' }}
+  cancel-in-progress: false
+
+permissions:
+  id-token: write # REQUIRED: mints the OIDC token.
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment || 'dev' }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+    timeout-minutes: 15
+
+    env:
+      AWS_REGION: ap-south-1
+      # Set to the directory holding next.config.js if the site is not at the
+      # repository root.
+      SITE_DIR: .
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # npm, not pnpm: the landing site is its own repository with its own
+      # package-lock.json, and nothing here shares a workspace with the api
+      # monorepo. `cache: npm` keys off that lockfile, so it must be committed.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: ${{ env.SITE_DIR }}/package-lock.json
+
+      # `ci`, not `install`: it installs exactly the lockfile and fails if
+      # package.json has drifted from it, so a build cannot silently resolve a
+      # different dependency tree than the one that was reviewed.
+      - run: npm ci
+        working-directory: ${{ env.SITE_DIR }}
+
+      - run: npm run build
+        working-directory: ${{ env.SITE_DIR }}
+
+      - name: Verify the export
+        working-directory: ${{ env.SITE_DIR }}
+        run: |
+          set -euo pipefail
+          test -d out || {
+            echo "::error::No out/ directory. next.config.js needs output: 'export'."
+            exit 1
+          }
+          test -f out/404.html || {
+            echo "::error::out/404.html is missing — the CDN serves it for unknown paths."
+            echo "::error::Add a not-found page so the export emits it."
+            exit 1
+          }
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Resolve bucket and distribution
+        id: target
+        run: |
+          set -euo pipefail
+          ENV="${{ github.event.inputs.environment || 'dev' }}"
+          STACK="XpertOne-$([ "$ENV" = prod ] && echo Prod || echo Dev)-Assets"
+
+          get() {
+            aws cloudformation describe-stacks --stack-name "$STACK" \
+              --query "Stacks[0].Outputs[?OutputKey=='$1'].OutputValue" --output text
+          }
+          BUCKET="$(get landingBucketName)"
+          DIST="$(get landingDistributionId)"
+
+          if [ -z "$BUCKET" ] || [ "$BUCKET" = "None" ]; then
+            echo "::error::Could not resolve landingBucketName from $STACK"
+            exit 1
+          fi
+          echo "bucket=$BUCKET" >> "$GITHUB_OUTPUT"
+          echo "distribution=$DIST" >> "$GITHUB_OUTPUT"
+          echo "Bucket: $BUCKET / Distribution: $DIST"
+
+      # Content-hashed, immutable. Uploaded first so the HTML that references
+      # them always finds them.
+      - name: Upload _next/static
+        working-directory: ${{ env.SITE_DIR }}
+        run: |
+          aws s3 sync out/_next/static/ "s3://${{ steps.target.outputs.bucket }}/_next/static/" \
+            --cache-control "public, max-age=31536000, immutable"
+
+      # Then the HTML and everything else, with --delete so a removed page stops
+      # being served. Short cache: CloudFront revalidates, the browser does not
+      # hold a stale page.
+      - name: Upload pages
+        working-directory: ${{ env.SITE_DIR }}
+        run: |
+          aws s3 sync out/ "s3://${{ steps.target.outputs.bucket }}/" \
+            --delete --exclude "_next/static/*" \
+            --cache-control "public, max-age=0, s-maxage=300, must-revalidate"
+
+      # Any route's HTML may have changed, so the whole tree is invalidated.
+      # The first 1,000 paths each month are free.
+      - name: Invalidate CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ steps.target.outputs.distribution }}" \
+            --paths "/*"

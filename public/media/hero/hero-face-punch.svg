@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 640" role="img" aria-label="Face-recognition punch-in on a phone">
+  <defs>
+    <linearGradient id="screen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="scan" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0ea5e9" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0"/>
+    </linearGradient>
+    <clipPath id="round">
+      <rect x="10" y="10" width="300" height="620" rx="40"/>
+    </clipPath>
+  </defs>
+
+  <rect x="0" y="0" width="320" height="640" rx="48" fill="#0b1120"/>
+  <rect x="10" y="10" width="300" height="620" rx="40" fill="url(#screen)"/>
+
+  <g clip-path="url(#round)">
+    <!-- status bar -->
+    <rect x="120" y="24" width="80" height="18" rx="9" fill="#0b1120"/>
+    <rect x="34" y="28" width="34" height="8" rx="4" fill="#64748b"/>
+    <rect x="252" y="28" width="34" height="8" rx="4" fill="#64748b"/>
+
+    <!-- viewfinder -->
+    <rect x="34" y="86" width="252" height="336" rx="28" fill="#111f36"/>
+    <rect x="34" y="86" width="252" height="336" rx="28" fill="url(#scan)"/>
+    <!-- abstract head -->
+    <circle cx="160" cy="212" r="56" fill="#334155"/>
+    <path d="M84 422c0-42 34-76 76-76s76 34 76 76z" fill="#334155"/>
+    <!-- scan corners -->
+    <g stroke="#0ea5e9" stroke-width="4" stroke-linecap="round" fill="none">
+      <path d="M74 138v-18a12 12 0 0 1 12-12h18"/>
+      <path d="M216 108h18a12 12 0 0 1 12 12v18"/>
+      <path d="M246 362v18a12 12 0 0 1-12 12h-18"/>
+      <path d="M104 392H86a12 12 0 0 1-12-12v-18"/>
+    </g>
+    <!-- scan line -->
+    <rect x="74" y="252" width="172" height="3" rx="1.5" fill="#38bdf8"/>
+
+    <!-- match pill -->
+    <rect x="80" y="450" width="160" height="36" rx="18" fill="#0ea5e9"/>
+    <circle cx="104" cy="468" r="8" fill="#ffffff"/>
+    <path d="M100.5 468l2.5 2.5 4.5-5" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <rect x="120" y="463" width="98" height="10" rx="5" fill="#ffffff"/>
+
+    <!-- caption lines -->
+    <rect x="80" y="510" width="160" height="12" rx="6" fill="#475569"/>
+    <rect x="106" y="536" width="108" height="10" rx="5" fill="#334155"/>
+
+    <!-- punch-in button -->
+    <rect x="34" y="574" width="252" height="44" rx="22" fill="#1e293b"/>
+    <rect x="118" y="591" width="84" height="10" rx="5" fill="#7dd3fc"/>
+  </g>
+</svg>
