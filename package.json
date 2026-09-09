@@ -5,10 +5,12 @@
   "scripts": {
     "dev": "node scripts/with-stage.mjs development dev",
     "prod": "node scripts/with-stage.mjs production dev",
-    "build": "eslint && node scripts/with-stage.mjs development build",
-    "build:prod": "eslint && node scripts/with-stage.mjs production build",
+    "build": "npm run lint && npm run typecheck && node scripts/with-stage.mjs development build",
+    "build:prod": "npm run lint && npm run typecheck && node scripts/with-stage.mjs production build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "prepare": "husky"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -30,6 +32,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.4",
+    "husky": "^9.1.7",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
