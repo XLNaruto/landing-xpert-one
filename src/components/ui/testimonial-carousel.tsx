@@ -71,11 +71,11 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
     "grid size-10 cursor-pointer place-items-center rounded-full border border-border bg-card text-foreground shadow-xs transition-all outline-none hover:-translate-y-px hover:border-brand/40 hover:text-brand hover:shadow-md focus-visible:ring-3 focus-visible:ring-ring/50"
 
   return (
-    /* Wider than the `max-w-6xl` content column but still bounded — a
+    /* Slightly wider than the `.section-inner` column but still bounded — a
        full-bleed track ran to the window edge and the trailing card looked
        clipped by the browser rather than the layout. */
     <div
-      className="mx-auto w-full max-w-7xl px-5 md:px-8"
+      className="mx-auto w-full px-5 md:px-8 lg:px-12 2xl:max-w-[100rem]"
     >
       <Swiper
         /* Re-initialise once the padded slides arrive — Swiper reads the

@@ -9,7 +9,7 @@ import { site } from "@/content/site"
 export function Footer() {
   return (
     <footer className="border-t border-border bg-muted/30">
-      <div className="mx-auto w-full max-w-6xl px-5 py-12 md:px-8 md:py-16">
+      <div className="mx-auto w-full px-5 py-12 md:px-8 md:py-16 lg:px-12 xl:px-16 2xl:max-w-[90rem]">
         <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>
             <Logo className="h-9 md:h-11" />

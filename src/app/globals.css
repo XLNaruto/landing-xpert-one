@@ -213,10 +213,15 @@
   /* `scroll-mt-*` keeps an anchored section clear of the sticky header
      (h-14 on mobile, h-16 from `md:` up) rather than under it. */
   .section {
-    @apply w-full scroll-mt-20 px-5 py-16 md:scroll-mt-24 md:px-8 md:py-24;
+    @apply w-full scroll-mt-20 px-5 py-16 md:scroll-mt-24 md:px-8 md:py-24 lg:px-12 xl:px-16;
   }
+  /* Fluid up to `2xl`: the content column grows with the viewport instead of
+     leaving wide empty gutters on laptop screens. From `2xl` up it stops
+     growing and centres, so ultra-wide monitors get a bounded, readable
+     column rather than stretched-out sections. Header, footer and the
+     testimonial carousel repeat this width so everything stays aligned. */
   .section-inner {
-    @apply mx-auto w-full max-w-6xl;
+    @apply mx-auto w-full 2xl:max-w-[90rem];
   }
   /* Section headers are centred by default; a split layout that needs a
      left-aligned header overrides with `text-left` (and `mx-0` on the lead). */
