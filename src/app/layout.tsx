@@ -1,4 +1,5 @@
 import type { Viewport } from "next"
+import type { ReactNode } from "react"
 import { Geist } from "next/font/google"
 import { Analytics } from "@/components/analytics"
 import { Footer } from "@/components/layout/footer"
@@ -21,7 +22,7 @@ export const viewport: Viewport = {
   ],
 }
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en-IN"
