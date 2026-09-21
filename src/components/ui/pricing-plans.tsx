@@ -4,6 +4,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { Check } from "lucide-react"
 import { Stagger, StaggerItem } from "@/components/motion/stagger"
+import { Tilt } from "@/components/motion/tilt"
 import { buttonVariants } from "@/components/ui/button"
 import type { BillingCycle, Plan } from "@/types"
 import { cn } from "@/lib/utils"
@@ -76,7 +77,11 @@ export function PricingPlans({ plans }: { plans: Plan[] }) {
         </p>
       </div>
 
-      <Stagger as="ul" className="mx-auto mt-12 grid max-w-lg items-stretch gap-6 lg:max-w-none lg:grid-cols-3">
+      <Stagger
+        as="ul"
+        depth
+        className="mx-auto mt-12 grid max-w-lg items-stretch gap-6 lg:max-w-none lg:grid-cols-3"
+      >
         {plans.map((plan) => {
           const { price, period } = plan[cycle]
           /* "Let's talk" is a sentence, not a figure — it can't carry the
@@ -87,84 +92,98 @@ export function PricingPlans({ plans }: { plans: Plan[] }) {
             <StaggerItem
               as="li"
               key={plan.id}
-              className={cn(
-                "relative flex h-full flex-col overflow-hidden rounded-3xl border bg-card transition-all duration-300",
-                plan.featured
-                  ? "border-brand/60 shadow-xl shadow-brand/15 ring-1 ring-brand/20 lg:-mt-5"
-                  : "border-border shadow-xs hover:-translate-y-1 hover:border-brand/40 hover:shadow-lg hover:shadow-brand/10",
-              )}
+              className={cn("h-full", plan.featured && "lg:-mt-5")}
             >
-              {/* The featured plan gets a brand cap instead of a louder
-                  border, so the emphasis survives dark mode. */}
-              {plan.featured && (
-                <span
-                  aria-hidden
-                  className="block h-1.5 w-full bg-linear-to-r from-brand to-brand/60"
-                />
-              )}
-
-              <div
-                className={cn("p-6 md:p-8", plan.featured && "bg-brand-muted/30")}
+              {/* <Tilt> owns the transform, so the plain card's old
+                  `hover:-translate-y-1` lift is now the lean instead. The
+                  featured card tilts a touch less: it is already raised, and
+                  a wide card swinging as far as a small one looks unstable. */}
+              <Tilt
+                max={plan.featured ? 5 : 7}
+                className={cn(
+                  "flex h-full flex-col overflow-hidden rounded-3xl border bg-card transition-[border-color,box-shadow] duration-300",
+                  plan.featured
+                    ? "border-brand/60 shadow-xl shadow-brand/15 ring-1 ring-brand/20"
+                    : "border-border shadow-xs hover:border-brand/40 hover:shadow-lg hover:shadow-brand/10",
+                )}
               >
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="text-base font-semibold tracking-tight uppercase">
-                    {plan.name}
-                  </h3>
-                  {plan.featured && (
-                    <span className="rounded-full bg-brand px-2.5 py-1 text-[0.6875rem] font-bold tracking-wide text-brand-foreground uppercase shadow-sm shadow-brand/25">
-                      Most Popular
-                    </span>
-                  )}
-                </div>
-
-                <p className="mt-5 flex flex-wrap items-baseline gap-x-2">
+                {/* The featured plan gets a brand cap instead of a louder
+                  border, so the emphasis survives dark mode. */}
+                {plan.featured && (
                   <span
-                    className={cn(
-                      "font-semibold tracking-tight tabular-nums",
-                      isFigure ? "text-4xl md:text-5xl" : "text-3xl",
-                    )}
-                  >
-                    {price}
-                  </span>
-                  <span className="text-sm text-muted-foreground">{period}</span>
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-pretty text-muted-foreground">
-                  {plan.description}
-                </p>
-              </div>
+                    aria-hidden
+                    className="block h-1.5 w-full bg-linear-to-r from-brand to-brand/60"
+                  />
+                )}
 
-              <div className="flex flex-1 flex-col border-t border-border p-6 md:p-8">
-                <ul className="flex-1 space-y-3.5">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex gap-3 text-sm">
-                      <span
-                        className={cn(
-                          "mt-px grid size-5 shrink-0 place-items-center rounded-full",
-                          plan.featured
-                            ? "bg-brand text-brand-foreground"
-                            : "bg-brand-muted text-accent-foreground",
-                        )}
-                        aria-hidden
-                      >
-                        <Check className="size-3" strokeWidth={3} />
-                      </span>
-                      <span className="text-pretty">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Link
-                  href="/#cta"
+                <div
                   className={cn(
-                    buttonVariants({
-                      variant: plan.featured ? "glass" : "glass-muted",
-                    }),
-                    "mt-8 h-11 w-full rounded-full text-sm font-semibold hover:-translate-y-px",
+                    "p-6 md:p-8",
+                    plan.featured && "bg-brand-muted/30",
                   )}
                 >
-                  {plan.cta}
-                </Link>
-              </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className="text-base font-semibold tracking-tight uppercase">
+                      {plan.name}
+                    </h3>
+                    {plan.featured && (
+                      <span className="rounded-full bg-brand px-2.5 py-1 text-[0.6875rem] font-bold tracking-wide text-brand-foreground uppercase shadow-sm shadow-brand/25">
+                        Most Popular
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="mt-5 flex flex-wrap items-baseline gap-x-2">
+                    <span
+                      className={cn(
+                        "font-semibold tracking-tight tabular-nums",
+                        isFigure ? "text-4xl md:text-5xl" : "text-3xl",
+                      )}
+                    >
+                      {price}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      {period}
+                    </span>
+                  </p>
+                  <p className="mt-3 text-sm leading-relaxed text-pretty text-muted-foreground">
+                    {plan.description}
+                  </p>
+                </div>
+
+                <div className="flex flex-1 flex-col border-t border-border p-6 md:p-8">
+                  <ul className="flex-1 space-y-3.5">
+                    {plan.features.map((feature) => (
+                      <li key={feature} className="flex gap-3 text-sm">
+                        <span
+                          className={cn(
+                            "mt-px grid size-5 shrink-0 place-items-center rounded-full",
+                            plan.featured
+                              ? "bg-brand text-brand-foreground"
+                              : "bg-brand-muted text-accent-foreground",
+                          )}
+                          aria-hidden
+                        >
+                          <Check className="size-3" strokeWidth={3} />
+                        </span>
+                        <span className="text-pretty">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Link
+                    href="/#cta"
+                    className={cn(
+                      buttonVariants({
+                        variant: plan.featured ? "glass" : "glass-muted",
+                      }),
+                      "mt-8 h-11 w-full rounded-full text-sm font-semibold hover:-translate-y-px",
+                    )}
+                  >
+                    {plan.cta}
+                  </Link>
+                </div>
+              </Tilt>
             </StaggerItem>
           )
         })}

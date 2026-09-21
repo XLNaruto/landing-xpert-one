@@ -23,6 +23,7 @@ export default function HowItWorksSection() {
             offsets are the card padding (1.5rem) plus half the badge (1.375rem). */}
         <Stagger
           as="ul"
+          depth
           className="mt-12 grid auto-rows-fr gap-6 md:grid-cols-3"
         >
           {steps.map((step, index) => (

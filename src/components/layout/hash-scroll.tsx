@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation"
 import { useEffect } from "react"
+import { scrollToElement } from "@/lib/smooth-scroll"
 
 /**
  * Anchor navigation the browser and the App Router each get half-right.
@@ -21,9 +22,9 @@ export function HashScroll() {
   const pathname = usePathname()
 
   useEffect(() => {
-    const prefersReducedMotion = () =>
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-
+    /* The actual scrolling is `lib/smooth-scroll`'s job: it hands the move to
+       Lenis when momentum scrolling is running and falls back to
+       `scrollIntoView` when it is not. */
     const scrollToId = (rawId: string) => {
       const id = decodeURIComponent(rawId)
       if (!id) return false
@@ -31,10 +32,7 @@ export function HashScroll() {
       const el = document.getElementById(id)
       if (!el) return false
 
-      el.scrollIntoView({
-        behavior: prefersReducedMotion() ? "auto" : "smooth",
-        block: "start",
-      })
+      scrollToElement(el)
       return true
     }
 

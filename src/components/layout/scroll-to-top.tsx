@@ -3,6 +3,7 @@
 import { ArrowUp } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { scrollToTop } from "@/lib/smooth-scroll"
 import { cn } from "@/lib/utils"
 
 /**
@@ -39,18 +40,11 @@ export function ScrollToTop() {
     }
   }, [])
 
-  const scrollToTop = () => {
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches
-    window.scrollTo({ top: 0, behavior: reducedMotion ? "auto" : "smooth" })
-  }
-
   return (
     <Button
       type="button"
       variant="glass-muted"
-      onClick={scrollToTop}
+      onClick={() => scrollToTop()}
       aria-label="Back to top"
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}

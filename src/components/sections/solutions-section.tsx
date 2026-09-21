@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { ArrowRight, Check } from "lucide-react"
 import { FadeIn } from "@/components/motion/fade-in"
+import { Reveal3d } from "@/components/motion/reveal-3d"
 import { buttonVariants } from "@/components/ui/button"
 import { Stagger, StaggerItem } from "@/components/motion/stagger"
 import { solutions } from "@/content/solutions"
@@ -35,7 +36,9 @@ export default function SolutionsSection() {
             const capsFrom = capsOnRight ? "right" : "left"
 
             return (
-              <FadeIn key={solution.id} from="none">
+              /* The row tips up out of the page as it arrives; the two
+                 panels inside then slide in from their own edges. */
+              <Reveal3d key={solution.id}>
                 <article
                   id={solution.id}
                   className="grid scroll-mt-24 overflow-hidden rounded-3xl border border-border bg-card shadow-xs lg:grid-cols-2"
@@ -65,7 +68,10 @@ export default function SolutionsSection() {
                     {/* A short brand rule ties the tagline to the numbered
                         mark above without another pill or badge. */}
                     <p className="mt-3 flex items-center gap-3 text-base font-medium text-brand md:text-lg">
-                      <span className="h-px w-7 shrink-0 bg-brand" aria-hidden />
+                      <span
+                        className="h-px w-7 shrink-0 bg-brand"
+                        aria-hidden
+                      />
                       {solution.tagline}
                     </p>
                     <p className="mt-4 max-w-prose text-base text-pretty text-muted-foreground">
@@ -150,7 +156,7 @@ export default function SolutionsSection() {
                     </Stagger>
                   </FadeIn>
                 </article>
-              </FadeIn>
+              </Reveal3d>
             )
           })}
         </div>

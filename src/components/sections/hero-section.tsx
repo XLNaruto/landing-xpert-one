@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, CheckCircle2 } from "lucide-react"
+import { Parallax } from "@/components/motion/parallax"
 import { Reveal } from "@/components/motion/reveal"
 import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -21,13 +22,21 @@ export default function HeroSection() {
       className="section relative overflow-hidden pt-14 md:pt-24"
     >
       {/* Two soft washes bleeding in from the top corners, brand on the left,
-          a warm tint on the right — the page ground stays flat behind them. */}
+          a warm tint on the right — the page ground stays flat behind them.
+          They drift up faster than the copy does, which is what gives the
+          hero its depth; being blurred colour, nothing about the drift reads
+          as a layout shift. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 -top-32 h-[28rem]
-          bg-[radial-gradient(45%_70%_at_12%_0%,var(--brand-muted),transparent),radial-gradient(45%_70%_at_88%_0%,#fde8e4,transparent)]
-          dark:opacity-30"
-      />
+        className="pointer-events-none absolute inset-x-0 -top-32 h-[28rem]"
+      >
+        <Parallax
+          distance={70}
+          className="size-full
+            bg-[radial-gradient(45%_70%_at_12%_0%,var(--brand-muted),transparent),radial-gradient(45%_70%_at_88%_0%,#fde8e4,transparent)]
+            dark:opacity-30"
+        />
+      </div>
 
       <div className="section-inner relative text-center">
         <Reveal from="none">
@@ -51,9 +60,9 @@ export default function HeroSection() {
             <Link
               href="/#cta"
               className={cn(
-                  buttonVariants({ variant: "glass", size: "lg" }),
-                  "h-11 rounded-full px-6 text-base",
-                )}
+                buttonVariants({ variant: "glass", size: "lg" }),
+                "h-11 rounded-full px-6 text-base",
+              )}
             >
               Book a live demo
               <ArrowRight aria-hidden />
@@ -99,8 +108,13 @@ export default function HeroSection() {
           </div>
 
           {/* The phone rides the bottom-left corner of the screenshot; below md
-              there is no room for it to overlap without covering the register. */}
-          <div className="absolute -bottom-8 -left-2 hidden w-28 overflow-hidden rounded-3xl border border-border bg-card shadow-2xl shadow-foreground/15 md:block lg:-left-6 lg:w-36">
+              there is no room for it to overlap without covering the register.
+              It also travels against the screenshot — a short, opposite drift
+              is what separates the two planes. */}
+          <Parallax
+            distance={-26}
+            className="absolute -bottom-8 -left-2 hidden w-28 overflow-hidden rounded-3xl border border-border bg-card shadow-2xl shadow-foreground/15 md:block lg:-left-6 lg:w-36"
+          >
             <Image
               src="/media/hero/hero-face-punch.svg"
               alt="Punching in from a phone with face recognition"
@@ -109,7 +123,7 @@ export default function HeroSection() {
               sizes="144px"
               className="h-auto w-full"
             />
-          </div>
+          </Parallax>
         </div>
       </Reveal>
 
