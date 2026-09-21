@@ -122,7 +122,7 @@ export function LeadForm() {
           <textarea
             name="note"
             rows={3}
-            placeholder="How do you run attendance and payroll today?"
+            placeholder="Tell us about your current attendance and payroll process"
             className={cn(fieldClass, neutralBorder, "min-h-24 resize-y py-2.5")}
           />
         </label>
@@ -145,8 +145,9 @@ export function LeadForm() {
       </Button>
 
       <p className="mt-3 text-xs text-muted-foreground">
-        <span className="text-destructive">*</span> Required. We reply within one
-        working day — no newsletter, no reselling your data.
+        Required fields are marked with{" "}
+        <span className="text-destructive">*</span>. We&apos;ll get back to you
+        within one working day.
       </p>
     </form>
   )

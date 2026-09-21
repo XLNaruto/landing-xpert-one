@@ -16,12 +16,12 @@ export const site = {
    * terms people actually search for.
    */
   seoDescription:
-    "HR software for Indian teams: one employee record, face-recognition attendance from any phone, and a payroll run that already knows PF, ESIC, PT and LWF.",
+    "HR software for modern teams: one employee record, face-recognition attendance from any device, and automated payroll built for complete compliance.",
   url: "https://xpertoneindia.com",
   /** The agency that builds it — credited in the footer. */
   companyUrl: "https://www.xpertlab.com",
-  email: "hello@xpertlab.com",
-  phone: "+91 90000 00000",
+  email: "info@xpertlab.com",
+  phone: "+91 87807 74336",
   address: "Junagadh, Gujarat, India",
   /** The same address, split for schema.org's PostalAddress. */
   location: {

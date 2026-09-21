@@ -13,7 +13,7 @@ export default function FaqSection() {
       <div className="section-inner max-w-3xl">
         <FadeIn>
           <p className="eyebrow">FAQ</p>
-          <h2 className="section-title">The questions we always get</h2>
+          <h2 className="section-title">Questions before you get started</h2>
         </FadeIn>
 
         <FadeIn delay={0.05}>

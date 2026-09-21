@@ -2,43 +2,53 @@ import type { Faq } from "@/types"
 
 export const faqs: Faq[] = [
   {
-    question: "How does face-recognition attendance work?",
+    question: "How does XpertOne attendance work?",
     answer:
-      "An employee enrols their face once in the mobile app. After that, checking in and out captures a photo, the location and the device against the punch — so the register carries evidence, not just a timestamp. No biometric hardware to buy or maintain.",
+      "Employees can mark attendance through the XpertOne mobile app using face scan. Supervisors can also manage attendance for multiple employees from their app.",
   },
   {
-    question: "Do we need the attendance module to run payroll?",
+    question: "Does attendance connect directly with payroll?",
     answer:
-      "Payroll reads attendance to work out payable days, so the two are designed to run together. If you already collect attendance elsewhere, the salary register accepts an import instead.",
+      "Yes. Attendance data can be used in payroll for working days, leave, overtime and other salary calculations, reducing the need to enter the same information again.",
   },
   {
-    question: "Which statutory deductions are handled?",
+    question: "What payroll and statutory requirements does XpertOne support?",
     answer:
-      "PF, ESIC, PT and LWF. Each keeps its own rate history, so a run — or a re-run of a month from last year — is priced at the rates that were in force for that period, with matching PF, ESIC and PT reports for filing.",
+      "XpertOne supports common payroll requirements such as PF, ESIC, PT and TDS, along with salary calculations, deductions, payslips and payroll reports.",
   },
   {
-    question: "Can we pay staff in different ways?",
+    question: "Can we create different salary structures for employees?",
     answer:
-      "Yes. A run can be settled by cash, cheque, NEFT, RTGS, UPI, online transfer or another mode, tracked per batch. For NEFT, RTGS and IMPS the system generates the bank's bulk-transfer sheet for you to upload.",
+      "Yes. You can configure different salary components and structures based on your company's payroll requirements, including allowances, deductions, overtime and other components.",
   },
   {
-    question: "We have several companies and branches. Is that extra?",
+    question: "Can we manage multiple companies and branches?",
     answer:
-      "Multiple companies and branches are part of the product, not an add-on. Each user's scope decides which of them they can see, and switching company switches the entire workspace.",
+      "Yes. XpertOne allows you to manage multiple companies, branches and their employees from a centralised system.",
   },
   {
-    question: "How long does it take to go live?",
+    question: "Can employees use XpertOne from their mobile phones?",
     answer:
-      "Most teams are running within two to three weeks: company and statutory setup first, then employee import and face enrolment, then a first attendance cycle and salary run with our engineer alongside.",
+      "Yes. Employees can use the mobile app to mark attendance, check attendance history, view working hours and access other employee-related information.",
   },
   {
-    question: "Who can see what?",
+    question: "How do we control what different users can access?",
     answer:
-      "Roles decide which screens exist for a user, branch scope decides whose records they reach, approval chains decide who signs off leave, and IP rules can restrict where sign-in is allowed from at all.",
+      "Role-based permissions allow you to control which features and information are available to admins, HR teams, supervisors and other users. IP-based access controls can also be configured where required.",
   },
   {
-    question: "What happens to our data if we leave?",
+    question: "Can our employees communicate through XpertOne?",
     answer:
-      "It stays yours. Every register and report exports to Excel, and we will provide a full database export on request when a subscription ends. No exit fee.",
+      "Yes. XpertTalk provides one-to-one and group messaging, file and media sharing, message search and other tools for internal business communication.",
+  },
+  {
+    question: "How long does it take to get XpertOne up and running?",
+    answer:
+      "The implementation time depends on your company structure, number of employees and the modules you need. Our team helps with setup, employee data and configuration before you start using the system.",
+  },
+  {
+    question: "Can XpertOne handle our existing employee data?",
+    answer:
+      "Yes. Existing employee information can be imported into the system, so your team does not have to create every employee record from scratch.",
   },
 ]

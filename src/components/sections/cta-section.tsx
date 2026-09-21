@@ -8,15 +8,15 @@ import { site } from "@/content/site"
 const promises = [
   {
     icon: CalendarCheck,
-    text: "A 30-minute walkthrough — one month of your own attendance and one salary run",
-  },
-  {
-    icon: MessageSquare,
-    text: "A straight answer on your statutory setup: PF, ESIC, PT and LWF as you actually apply them",
+    text: "Live product walkthrough based on your requirements",
   },
   {
     icon: Zap,
-    text: "An import estimate for your employee sheet before you commit to anything",
+    text: "Attendance to payroll in one connected system",
+  },
+  {
+    icon: MessageSquare,
+    text: "Clear guidance on payroll compliance and setup",
   },
 ]
 
@@ -47,11 +47,12 @@ export default function CtaSection() {
             >
               <p className="eyebrow text-left">Book a demo</p>
               <h2 className="section-title mx-0 text-left">
-                See {site.name} running on your own data
+                See {site.name} with your real workforce data
               </h2>
               <p className="section-lead mx-0 text-left">
-                Tell us how you run attendance and payroll today. We&apos;ll
-                show you the exact screens that replace it — no slide deck.
+                Tell us how you currently manage attendance and payroll.
+                We&apos;ll show you how {site.name} can fit into your existing
+                process and help simplify day-to-day workforce management.
               </p>
               <ul className="mt-8 space-y-4">
                 {promises.map((promise) => (
