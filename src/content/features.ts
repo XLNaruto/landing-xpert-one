@@ -1,68 +1,68 @@
 import {
+  ArrowRightLeft,
   Building2,
-  FileBarChart,
-  Landmark,
   MessagesSquare,
   ShieldCheck,
   Smartphone,
+  Wallet,
 } from "lucide-react"
 import type { Feature, Stat, Step } from "@/types"
 
 /** What holds the three modules together — the reason they work as one system. */
 export const features: Feature[] = [
   {
-    icon: Landmark,
-    title: "Statutory rates, versioned",
+    icon: Wallet,
+    title: "Payroll without the rework",
     description:
-      "PF, ESIC, PT and LWF each keep their own rate history and office addresses. A re-run of an old month prices at that month's rates, not today's.",
-  },
-  {
-    icon: Building2,
-    title: "Many companies, many branches",
-    description:
-      "Group entities sit side by side. Switch company and the whole workspace — employees, registers, reports — follows.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Roles, scope and IP control",
-    description:
-      "Permissions decide which screens exist for a user, scope decides which branches they see, and IP rules decide where they can sign in from.",
+      "Automate salary calculations using attendance, leave, overtime and other payroll inputs, reducing manual work every month.",
   },
   {
     icon: Smartphone,
-    title: "A real mobile app for staff",
+    title: "Attendance from anywhere",
     description:
-      "Employees register their face, punch in and out, and raise leave requests from their own phone. The portal stays the admin's tool.",
-  },
-  {
-    icon: FileBarChart,
-    title: "Returns-ready reports",
-    description:
-      "Salary, PF, ESIC and PT reports come out of the same figures you paid on, so filing is an export rather than a rebuild.",
+      "Employees can mark attendance from their mobile, check their working hours and view their attendance history in one place.",
   },
   {
     icon: MessagesSquare,
-    title: "Chat and support built in",
+    title: "Communication that stays connected",
     description:
-      "Internal chat with monitoring for the compliance-minded, and a ticket queue so an employee's question reaches HR instead of a WhatsApp group.",
+      "Use XpertTalk for one-to-one and group conversations, file sharing and employee communication without relying on separate apps.",
+  },
+  {
+    icon: ArrowRightLeft,
+    title: "Accurate attendance to payroll",
+    description:
+      "Attendance data flows directly into payroll, helping reduce duplicate entry and differences between attendance records and salary calculations.",
+  },
+  {
+    icon: Building2,
+    title: "Manage multiple teams and branches",
+    description:
+      "Manage employees, attendance and payroll across different companies, branches and teams from a single system.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Better control for HR and admin",
+    description:
+      "Set roles and permissions, manage payroll rules and access reports and employee information based on each user's responsibility.",
   },
 ]
 
 export const steps: Step[] = [
   {
-    title: "Set up the company",
+    title: "Create employee profiles",
     description:
-      "Branches, departments, designations and your PF, ESIC, PT and LWF rates go in first — the numbers everything else is computed against.",
+      "Add employee details, salary information, department, designation and other required records in one place.",
   },
   {
-    title: "Bring your people across",
+    title: "Track attendance",
     description:
-      "Send us the employee sheet you keep today. We import it, then your team fills the gaps in the guided ten-step record and enrols faces from the app.",
+      "Employees mark attendance through the mobile app, while supervisors can manage attendance, working hours and overtime.",
   },
   {
-    title: "Run one month with us watching",
+    title: "Process payroll",
     description:
-      "Your first attendance cycle and first salary run happen with our engineer alongside, reconciled against however you did it before.",
+      "Attendance, leave, overtime and salary details come together to simplify monthly payroll processing.",
   },
 ]
 

@@ -1,4 +1,4 @@
-import { CalendarCheck, UserRoundCog, Wallet } from "lucide-react"
+import { CalendarCheck, MessagesSquare, Wallet } from "lucide-react"
 import type { Solution } from "@/types"
 
 /**
@@ -7,54 +7,54 @@ import type { Solution } from "@/types"
  */
 export const solutions: Solution[] = [
   {
-    id: "employee-management",
-    icon: UserRoundCog,
-    name: "Employee Management",
-    tagline: "One record per person, complete",
+    id: "payroll",
+    icon: Wallet,
+    name: "XpertOne Payroll",
+    tagline: "From attendance logs to bank payout in seconds",
     description:
-      "Onboarding walks through ten steps and ends with a person whose file is actually finished — not a name and a phone number you chase details for later.",
+      "Your salary register reads monthly attendance logs and calculates exact payouts along with PF, ESIC, PT and LWF compliance deductions in a single click.",
     capabilities: [
-      "Basic, KYC and family details in one guided flow",
-      "Wage structure with allowances and deductions",
-      "Education, experience, documents and issued assets",
-      "Service history: transfers, promotions, branch moves",
-      "Shift, roster and leave allowance per employee",
-      "Company, branch, department and designation masters",
+      "1-click salary runs synced with attendance and leaves",
+      "Automatic PF, ESIC, PT and tax calculations",
+      "Instant payslip sharing via WhatsApp and email",
+      "Loans, salary advances and arrear tracking",
+      "Flexible wage structures and custom allowances",
+      "Multi-company support with self-service staff apps",
     ],
-    cta: "Walk the onboarding flow",
+    cta: "Watch a salary run",
   },
   {
-    id: "attendance-management",
+    id: "attendance",
     icon: CalendarCheck,
-    name: "Attendance Management",
-    tagline: "Punches you can trust, from a phone",
+    name: "XpertOne Attendance",
+    tagline: "Punches you can trust, straight from a phone",
     description:
-      "Staff mark attendance with their face in the mobile app. Every punch carries the captured image, the location and the device, so the register settles arguments instead of starting them.",
+      "Staff mark attendance using face recognition directly on their phones. Every punch captures verified location and device details to eliminate biometric hardware costs and proxy markups.",
     capabilities: [
-      "Face-recognition check-in and check-out, no hardware to buy",
-      "Location and device recorded against every punch",
-      "Department and designation cards with present, absent and rate",
-      "Month calendar per employee, with each day's punches behind it",
-      "Days resolved against leave, holidays and weekly offs",
-      "Leave management, leave quota and approval chains",
+      "Face-recognition check-ins with zero hardware",
+      "Geo-fencing limits punches to approved work locations",
+      "Automatic shift rosters and overtime tracking",
+      "Real-time status for present, absent and late staff",
+      "Monthly calendar with full daily check-in history",
+      "Instant sync with payroll calculations",
     ],
     cta: "See a punch in full detail",
   },
   {
-    id: "payroll-management",
-    icon: Wallet,
-    name: "Payroll Management",
-    tagline: "Attendance in, payslips out",
+    id: "xperttalk",
+    icon: MessagesSquare,
+    name: "XpertTalk",
+    tagline: "Secure internal chat built for teams",
     description:
-      "The salary register reads the month's attendance, applies the statutory rates in force for that period, and hands you a run you can pay and file from.",
+      "Keep work conversations safe and organised in one place. Staff communicate in real time on a private platform, replacing personal messaging apps and keeping company data secure.",
     capabilities: [
-      "Salary register split into To Process and Processed",
-      "PF, ESIC, PT and LWF applied at the rate in force that month",
-      "Bulk wage updates before a run, arrears and adjustments during it",
-      "Pay by cash, cheque, NEFT, RTGS, UPI or online — tracked per batch",
-      "Bank bulk-transfer sheets for NEFT, RTGS and IMPS",
-      "Salary, PF, ESIC and PT reports, plus bonus estimation",
+      "Direct messaging for private one-on-one chats",
+      "Group channels for teams and departments",
+      "Secure file, photo and document sharing",
+      "Enterprise data encryption for complete security",
+      "Pinned messages to highlight key announcements",
+      "Instant search to find past chats and files",
     ],
-    cta: "Watch a salary run",
+    cta: "Take a look inside XpertTalk",
   },
 ]

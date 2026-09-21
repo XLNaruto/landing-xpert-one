@@ -8,9 +8,10 @@ import { site } from "@/content/site"
 import { stats } from "@/content/features"
 
 const proofPoints = [
-  "Face attendance, no hardware",
-  "PF · ESIC · PT · LWF built in",
-  "Live in 2–3 weeks",
+  "1-click automated salary slips",
+  "Zero manual calculation errors",
+  "Automated shift & overtime tracking",
+  "Instant leave & geo-fencing approvals",
 ]
 
 export default function HeroSection() {
@@ -30,12 +31,12 @@ export default function HeroSection() {
 
       <div className="section-inner relative text-center">
         <Reveal from="none">
-          <p className="eyebrow">Employee · Attendance · Payroll</p>
+          <p className="eyebrow">Payroll • Attendance • Communication</p>
         </Reveal>
 
         <Reveal delay={0.05}>
           <h1 className="mx-auto mt-4 max-w-4xl text-4xl font-semibold tracking-tight text-balance md:text-5xl lg:text-6xl">
-            {site.tagline}
+            {site.headline}
           </h1>
         </Reveal>
 

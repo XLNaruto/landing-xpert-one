@@ -13,12 +13,13 @@ export default function SolutionsSection() {
         <FadeIn>
           <p className="eyebrow">Three solutions, one system</p>
           <h2 className="section-title">
-            Hire them, track them, pay them — without re-typing anything
+            One Employee Profile. Everything Connected.
           </h2>
           <p className="section-lead">
-            Each module stands on its own. Together they share one employee
-            record, so the wage structure you set on day one is the wage the
-            salary register prices in month twelve.
+            XpertOne brings payroll, attendance and employee communication
+            together through a single employee profile. Attendance data flows
+            directly into payroll, while XpertTalk keeps your team connected
+            without the need for duplicate data entry.
           </p>
         </FadeIn>
 

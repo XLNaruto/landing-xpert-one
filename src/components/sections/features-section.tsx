@@ -9,12 +9,12 @@ export default function FeaturesSection() {
         <FadeIn>
           <p className="eyebrow">Why one system</p>
           <h2 className="section-title">
-            The parts nobody demos, that decide whether it works
+            From check-in to payday, everything stays connected
           </h2>
           <p className="section-lead">
-            Three modules on one employee record means no exports between
-            steps, no second copy of a wage, and no month where attendance and
-            payroll disagree.
+            XpertOne brings payroll, attendance and employee communication into
+            one connected platform, helping your team reduce manual work, keep
+            information accurate and stay connected.
           </p>
         </FadeIn>
 

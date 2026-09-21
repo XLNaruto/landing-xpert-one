@@ -46,7 +46,7 @@ export default function OpengraphImage() {
             {site.tagline}
           </div>
           <div style={{ fontSize: 30, color: "#b7c3e8" }}>
-            Employee · Attendance · Payroll — on one employee record
+            Payroll • Attendance • Communication — on one platform
           </div>
         </div>
 

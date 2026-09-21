@@ -9,11 +9,12 @@ export default function HowItWorksSection() {
         <FadeIn>
           <p className="eyebrow">How it works</p>
           <h2 className="section-title">
-            Live in three weeks, including your first salary run
+            From employee setup to monthly payroll
           </h2>
           <p className="section-lead">
-            Onboarding is done by the same engineers who build the product, so
-            the answers you get about your own edge cases are the real ones.
+            XpertOne keeps employee information connected throughout the
+            process, from setting up employee records to tracking attendance
+            and processing monthly salaries.
           </p>
         </FadeIn>
 

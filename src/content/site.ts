@@ -2,9 +2,14 @@ export const site = {
   name: "XpertOne",
   company: "XpertLab Technologies",
   tagline: "Employees, Attendance and Payroll in one system",
+  /**
+   * The hero <h1>. Longer and more declarative than `tagline`, which has to
+   * stay short enough to sit inside a <title> and an OG card.
+   */
+  headline: "Everything Your Workforce Needs. One Connected Platform.",
   /** The long form — hero sub-headline and footer blurb. */
   description:
-    "XpertOne is one place for your people: the full employee record, face-recognition attendance from a phone, and a salary run that already knows PF, ESIC, PT and LWF.",
+    "XpertOne connects payroll, attendance, and employee communication in one unified platform, giving businesses the tools they need to manage their workforce more efficiently.",
   /**
    * The <meta name="description"> variant. Kept under 160 characters so search
    * engines show it whole instead of truncating mid-sentence, and led with the

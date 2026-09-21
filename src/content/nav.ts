@@ -11,9 +11,9 @@ export const footerLinks: { title: string; links: NavLink[] }[] = [
   {
     title: "Solutions",
     links: [
-      { label: "Employee Management", href: "/#employee-management" },
-      { label: "Attendance Management", href: "/#attendance-management" },
-      { label: "Payroll Management", href: "/#payroll-management" },
+      { label: "XpertOne Payroll", href: "/#payroll" },
+      { label: "XpertOne Attendance", href: "/#attendance" },
+      { label: "XpertTalk", href: "/#xperttalk" },
       { label: "Plans and pricing", href: "/#pricing" },
     ],
   },
