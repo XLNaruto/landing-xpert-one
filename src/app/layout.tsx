@@ -32,11 +32,10 @@ const heading = Bricolage_Grotesque({
 export const metadata = defaultMetadata
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
-    { media: "(prefers-color-scheme: dark)", color: "#020617" },
-  ],
-  colorScheme: "light dark",
+  /* Light only, matching DEFAULT_THEME in lib/theme.ts — the browser bar
+     shouldn't go dark over a light page just because the OS is. Restore the
+     dark entry if the theme toggle comes back. */
+  themeColor: "#f8fafc",
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {

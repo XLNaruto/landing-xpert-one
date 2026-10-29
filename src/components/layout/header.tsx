@@ -15,8 +15,9 @@ export function Header() {
         <NavLinks />
 
         <div className="flex items-center gap-2">
-          {/* Hidden for now, not removed — the site follows the OS theme
-              until it comes back. Drop `hidden` to show it again. */}
+          {/* Hidden for now, not removed — every visitor gets the light
+              theme (DEFAULT_THEME in lib/theme.ts) until it comes back. Drop
+              `hidden` to show it again. */}
           <ThemeToggle className="hidden" />
           <Link
             href="/#pricing"

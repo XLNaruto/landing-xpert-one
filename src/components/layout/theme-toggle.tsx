@@ -2,7 +2,13 @@
 
 import { Monitor, Moon, Sun } from "lucide-react"
 import { useSyncExternalStore } from "react"
-import { readTheme, setTheme, subscribeTheme, type Theme } from "@/lib/theme"
+import {
+  DEFAULT_THEME,
+  readTheme,
+  setTheme,
+  subscribeTheme,
+  type Theme,
+} from "@/lib/theme"
 import { cn } from "@/lib/utils"
 
 /* Each click moves one step round the cycle. */
@@ -17,7 +23,7 @@ const modes: Record<Theme, { icon: typeof Sun; label: string; next: Theme }> =
  * A round button that cycles light → dark → system. The icon shows the mode
  * in force; the tooltip says what a click will switch to.
  *
- * The server can't know the reader's cookie, so it renders "system" and the
+ * The server can't know the reader's cookie, so it renders the default and the
  * real choice takes over on hydration — the page colours are already right by
  * then, set by the pre-paint script in the root layout.
  */
@@ -25,7 +31,7 @@ export function ThemeToggle({ className }: { className?: string }) {
   const theme = useSyncExternalStore(
     subscribeTheme,
     readTheme,
-    () => "system" as const,
+    () => DEFAULT_THEME,
   )
   const { icon: Icon, label, next } = modes[theme]
   const nextLabel = modes[next].label

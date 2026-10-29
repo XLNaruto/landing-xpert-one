@@ -10,18 +10,25 @@ const MAX_AGE = 60 * 60 * 24 * 365
 const DARK_QUERY = "(prefers-color-scheme: dark)"
 
 /**
+ * What a visitor gets before they have picked anything. Light — the site's
+ * designed look — rather than "system": while the toggle is hidden there is no
+ * way to switch, and an OS in dark mode would otherwise lock the page dark.
+ */
+export const DEFAULT_THEME: Theme = "light"
+
+/**
  * Inlined into <head> by the root layout and run before first paint, so a
  * dark-mode reader never sees a white flash before hydration. Kept as a
  * string with no imports — it runs before any bundle has loaded. Must stay in
  * step with `applyTheme` below.
  */
-export const themeScript = `(function(){try{var m=document.cookie.match(/(?:^|; )${COOKIE}=(light|dark|system)/);var t=m?m[1]:"system";var d=t==="dark"||(t==="system"&&matchMedia("${DARK_QUERY}").matches);var r=document.documentElement;r.classList.toggle("dark",d);r.style.colorScheme=d?"dark":"light"}catch(e){}})()`
+export const themeScript = `(function(){try{var m=document.cookie.match(/(?:^|; )${COOKIE}=(light|dark|system)/);var t=m?m[1]:"${DEFAULT_THEME}";var d=t==="dark"||(t==="system"&&matchMedia("${DARK_QUERY}").matches);var r=document.documentElement;r.classList.toggle("dark",d);r.style.colorScheme=d?"dark":"light"}catch(e){}})()`
 
 export function readTheme(): Theme {
   const match = document.cookie.match(
     new RegExp(`(?:^|; )${COOKIE}=(light|dark|system)`),
   )
-  return (match?.[1] as Theme | undefined) ?? "system"
+  return (match?.[1] as Theme | undefined) ?? DEFAULT_THEME
 }
 
 function applyTheme(theme: Theme) {
