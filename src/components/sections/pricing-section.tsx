@@ -1,4 +1,5 @@
-import { FadeIn } from "@/components/motion/fade-in"
+import { ScrollHeading } from "@/components/motion/scroll-heading"
+import { WordReveal } from "@/components/motion/word-reveal"
 import { PricingPlans } from "@/components/ui/pricing-plans"
 import { plans } from "@/content/plans"
 
@@ -6,14 +7,16 @@ export default function PricingSection() {
   return (
     <section id="pricing" className="section bg-muted/30">
       <div className="section-inner">
-        <FadeIn>
+        <ScrollHeading>
           <p className="eyebrow">Pricing</p>
-          <h2 className="section-title">Priced per employee, not per module</h2>
+          <h2 className="section-title">
+            <WordReveal text="Priced per employee, not per module" />
+          </h2>
           <p className="section-lead">
             Employee import, face enrolment and onboarding are part of the plan,
             not a separate invoice.
           </p>
-        </FadeIn>
+        </ScrollHeading>
 
         <PricingPlans plans={plans} />
 

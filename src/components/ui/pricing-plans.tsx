@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Check } from "lucide-react"
-import { Stagger, StaggerItem } from "@/components/motion/stagger"
+import { ScrollFan, ScrollFanItem } from "@/components/motion/scroll-fan"
 import { Tilt } from "@/components/motion/tilt"
 import { buttonVariants } from "@/components/ui/button"
 import type { BillingCycle, Plan } from "@/types"
@@ -77,11 +77,9 @@ export function PricingPlans({ plans }: { plans: Plan[] }) {
         </p>
       </div>
 
-      <Stagger
-        as="ul"
-        depth
-        className="mx-auto mt-12 grid max-w-lg items-stretch gap-6 lg:max-w-none lg:grid-cols-3"
-      >
+      {/* The plans are dealt out from behind the featured card as the
+          grid scrolls in, and gathered back as it leaves (see <ScrollFan>). */}
+      <ScrollFan className="mx-auto mt-12 grid max-w-lg items-stretch gap-6 lg:max-w-none lg:grid-cols-3">
         {plans.map((plan) => {
           const { price, period } = plan[cycle]
           /* "Let's talk" is a sentence, not a figure — it can't carry the
@@ -89,8 +87,7 @@ export function PricingPlans({ plans }: { plans: Plan[] }) {
           const isFigure = /\d/.test(price)
 
           return (
-            <StaggerItem
-              as="li"
+            <ScrollFanItem
               key={plan.id}
               className={cn("h-full", plan.featured && "lg:-mt-5")}
             >
@@ -184,10 +181,10 @@ export function PricingPlans({ plans }: { plans: Plan[] }) {
                   </Link>
                 </div>
               </Tilt>
-            </StaggerItem>
+            </ScrollFanItem>
           )
         })}
-      </Stagger>
+      </ScrollFan>
     </>
   )
 }

@@ -1,7 +1,11 @@
 import Link from "next/link"
 import { ArrowRight, Check } from "lucide-react"
 import { FadeIn } from "@/components/motion/fade-in"
+import { ScrollHeading } from "@/components/motion/scroll-heading"
+import { WordReveal } from "@/components/motion/word-reveal"
 import { Reveal3d } from "@/components/motion/reveal-3d"
+import { Spotlight } from "@/components/motion/spotlight"
+import { StackCards } from "@/components/motion/stack-cards"
 import { buttonVariants } from "@/components/ui/button"
 import { Stagger, StaggerItem } from "@/components/motion/stagger"
 import { solutions } from "@/content/solutions"
@@ -11,10 +15,10 @@ export default function SolutionsSection() {
   return (
     <section id="solutions" className="section">
       <div className="section-inner">
-        <FadeIn>
+        <ScrollHeading>
           <p className="eyebrow">Three solutions, one system</p>
           <h2 className="section-title">
-            One Employee Profile. Everything Connected.
+            <WordReveal text="One Employee Profile. Everything Connected." />
           </h2>
           <p className="section-lead">
             XpertOne brings payroll, attendance and employee communication
@@ -22,9 +26,11 @@ export default function SolutionsSection() {
             directly into payroll, while XpertTalk keeps your team connected
             without the need for duplicate data entry.
           </p>
-        </FadeIn>
+        </ScrollHeading>
 
-        <div className="mt-14 flex flex-col gap-8 md:mt-16 md:gap-10">
+        {/* The three modules stack up on scroll — each pins and the next
+            slides over it (see <StackCards>). */}
+        <StackCards className="mt-14 md:mt-16">
           {solutions.map((solution, index) => {
             const Icon = solution.icon
             /* Alternating sides: on wide screens the capability panel swaps
@@ -39,9 +45,10 @@ export default function SolutionsSection() {
               /* The row tips up out of the page as it arrives; the two
                  panels inside then slide in from their own edges. */
               <Reveal3d key={solution.id}>
-                <article
+                <Spotlight
+                  as="article"
                   id={solution.id}
-                  className="grid scroll-mt-24 overflow-hidden rounded-3xl border border-border bg-card shadow-xs lg:grid-cols-2"
+                  className="grid scroll-mt-24 overflow-hidden rounded-3xl border border-border bg-card shadow-xs lg:grid-cols-2 lg:shadow-[0_-12px_40px_-12px_rgb(0_0_0/0.18)]"
                 >
                   <FadeIn
                     from={copyFrom}
@@ -155,11 +162,11 @@ export default function SolutionsSection() {
                       ))}
                     </Stagger>
                   </FadeIn>
-                </article>
+                </Spotlight>
               </Reveal3d>
             )
           })}
-        </div>
+        </StackCards>
       </div>
     </section>
   )

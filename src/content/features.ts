@@ -72,3 +72,15 @@ export const stats: Stat[] = [
   { value: "4", label: "statutory acts handled — PF, ESIC, PT, LWF" },
   { value: "1", label: "salary run per month, not one per spreadsheet" },
 ]
+
+/** The hero's rotating word: "One platform for …". */
+export const heroModules = ["Payroll", "Attendance", "Communication"] as const
+
+/**
+ * The oversized scrolling strip under the logos. Two rows travelling in
+ * opposite directions; short nouns read best at that size.
+ */
+export const ticker = {
+  top: ["Payroll", "Attendance", "XpertTalk", "Payslips", "Compliance"],
+  bottom: ["Face punch", "Geo-fencing", "Leave", "Overtime", "PF · ESIC"],
+} as const

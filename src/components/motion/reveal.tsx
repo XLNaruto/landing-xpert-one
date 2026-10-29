@@ -43,3 +43,43 @@ export function Reveal({
     </Component>
   )
 }
+
+type RevealWordsProps = {
+  text: string
+  /** A tail of `text` set in the animated brand gradient. */
+  accent?: string
+  /** Seconds before the first word. */
+  delay?: number
+  /** Seconds between one word and the next. */
+  step?: number
+}
+
+/**
+ * The hero headline's word-by-word entrance — each word rises out of a blur
+ * in turn. CSS only, like <Reveal>, because this is the LCP element: the
+ * words start animating on first paint, not after hydration.
+ */
+export function RevealWords({
+  text,
+  accent,
+  delay = 0,
+  step = 0.07,
+}: RevealWordsProps) {
+  const lead = accent ? text.replace(accent, "").trim() : text
+  const words = [
+    ...lead.split(" ").map((word) => ({ word, accent: false })),
+    ...(accent ? accent.split(" ") : []).map((word) => ({ word, accent: true })),
+  ]
+
+  return words.map(({ word, accent: isAccent }, index) => (
+    <span key={index}>
+      <span
+        className="reveal-word"
+        style={{ animationDelay: `${delay + index * step}s` } as CSSProperties}
+      >
+        {isAccent ? <span className="text-gradient">{word}</span> : word}
+      </span>
+      {index < words.length - 1 && " "}
+    </span>
+  ))
+}

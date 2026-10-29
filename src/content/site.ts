@@ -7,6 +7,8 @@ export const site = {
    * stay short enough to sit inside a <title> and an OG card.
    */
   headline: "Everything Your Workforce Needs. One Connected Platform.",
+  /** The tail of `headline` the hero sets in the gradient accent. */
+  headlineAccent: "One Connected Platform.",
   /** The long form — hero sub-headline and footer blurb. */
   description:
     "XpertOne connects payroll, attendance, and employee communication in one unified platform, giving businesses the tools they need to manage their workforce more efficiently.",

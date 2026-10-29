@@ -1,5 +1,6 @@
 import HeroSection from "@/components/sections/hero-section"
 import LogosSection from "@/components/sections/logos-section"
+import TickerSection from "@/components/sections/ticker-section"
 import SolutionsSection from "@/components/sections/solutions-section"
 import FeaturesSection from "@/components/sections/features-section"
 import HowItWorksSection from "@/components/sections/how-it-works-section"
@@ -20,6 +21,7 @@ export default function Home() {
       <JsonLd data={graph(softwareApplicationSchema, faqPageSchema)} />
       <HeroSection />
       <LogosSection />
+      <TickerSection />
       <SolutionsSection />
       <FeaturesSection />
       <HowItWorksSection />

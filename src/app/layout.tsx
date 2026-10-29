@@ -1,19 +1,33 @@
 import type { Viewport } from "next"
 import type { ReactNode } from "react"
-import { Geist } from "next/font/google"
+import { Bricolage_Grotesque, Plus_Jakarta_Sans } from "next/font/google"
 import Script from "next/script"
 import { Analytics } from "@/components/analytics"
 import { Footer } from "@/components/layout/footer"
 import { Header } from "@/components/layout/header"
 import { HashScroll } from "@/components/layout/hash-scroll"
 import { ScrollToTop } from "@/components/layout/scroll-to-top"
+import { ScrollProgress } from "@/components/motion/scroll-progress"
 import { SmoothScroll } from "@/components/motion/smooth-scroll"
 import { JsonLd } from "@/components/seo/json-ld"
 import { defaultMetadata } from "@/lib/seo"
+import { themeScript } from "@/lib/theme"
 import { graph, organizationSchema, websiteSchema } from "@/lib/structured-data"
 import "./globals.css"
 
-const sans = Geist({ variable: "--font-sans", subsets: ["latin"] })
+/* Two faces: a warm, open sans for reading, and a characterful grotesque
+   with optical sizing for headings — the contrast between them is what keeps
+   the page from reading as a plain template. */
+const sans = Plus_Jakarta_Sans({
+  variable: "--font-sans",
+  subsets: ["latin"],
+  display: "swap",
+})
+const heading = Bricolage_Grotesque({
+  variable: "--font-display",
+  subsets: ["latin"],
+  display: "swap",
+})
 
 export const metadata = defaultMetadata
 
@@ -22,14 +36,26 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: light)", color: "#f8fafc" },
     { media: "(prefers-color-scheme: dark)", color: "#020617" },
   ],
+  colorScheme: "light dark",
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en-IN"
-      className={`${sans.variable} h-full antialiased`}
+      className={`${sans.variable} ${heading.variable} h-full antialiased`}
+      /* The theme script below sets `class="dark"` and `color-scheme` on
+         <html> before hydration, so its attributes differ from the server's
+         by design. */
+      suppressHydrationWarning
     >
+      <head>
+        {/* Light, dark or the OS setting, applied before first paint so a
+            dark-mode reader never sees a white flash. A raw blocking script,
+            not next/script: `beforeInteractive` is queued until the Next
+            runtime loads, which is after the first paint. See lib/theme.ts. */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       {/* Browser extensions (Grammarly and friends) stamp their own
           `data-*` attributes onto <body> before React hydrates, which reads
           as a hydration mismatch. This suppresses the warning for <body>'s
@@ -57,6 +83,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <JsonLd data={graph(organizationSchema, websiteSchema)} />
         <SmoothScroll />
         <HashScroll />
+        <ScrollProgress />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

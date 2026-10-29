@@ -3,7 +3,8 @@ import { buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { Logo } from "@/components/layout/logo"
 import { MobileNav } from "@/components/layout/mobile-nav"
-import { navLinks } from "@/content/nav"
+import { NavLinks } from "@/components/layout/nav-links"
+import { ThemeToggle } from "@/components/layout/theme-toggle"
 
 export function Header() {
   return (
@@ -11,19 +12,12 @@ export function Header() {
       <div className="mx-auto flex h-14 w-full items-center justify-between px-5 md:h-16 md:px-8 lg:px-12 xl:px-16 2xl:max-w-[90rem]">
         <Logo priority />
 
-        <nav className="hidden items-center gap-1 md:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+        <NavLinks />
 
         <div className="flex items-center gap-2">
+          {/* Hidden for now, not removed — the site follows the OS theme
+              until it comes back. Drop `hidden` to show it again. */}
+          <ThemeToggle className="hidden" />
           <Link
             href="/#pricing"
             className={cn(
@@ -37,7 +31,7 @@ export function Header() {
             href="/#cta"
             className={cn(
               buttonVariants({ variant: "glass", size: "sm" }),
-              "hidden rounded-full md:inline-flex",
+              "btn-shine hidden rounded-full md:inline-flex",
             )}
           >
             Book a demo
