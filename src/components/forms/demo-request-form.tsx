@@ -1,12 +1,16 @@
 "use client"
 
-import { useRef, useState, type FormEvent } from "react"
+import { useEffect, useRef, useState, type FormEvent } from "react"
 import Link from "next/link"
-import { Check, Loader2, Send } from "lucide-react"
+import { BadgeCheck, Check, Loader2, Send } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
   EMPLOYEE_RANGES,
+  REFERRAL_CODE_MAX,
+  lookupReferral,
   newIdempotencyKey,
+  normaliseReferralCode,
+  referralCodeFromUrl,
   readDemoRequestValues,
   submitDemoRequest,
   validateDemoRequest,
@@ -14,6 +18,7 @@ import {
   type DemoRequestResult,
   type DemoRequestState,
   type DemoRequestTopic,
+  type ReferralLookup,
 } from "@/lib/demo-request"
 import { SelectField } from "@/components/ui/select-field"
 import { cn } from "@/lib/utils"
@@ -42,7 +47,7 @@ function FieldError({ id, error }: { id: string; error?: string }) {
 
 type FieldProps = {
   idPrefix: string
-  name: Exclude<DemoRequestField, "employees" | "message" | "consent">
+  name: Exclude<DemoRequestField, "employees" | "message" | "ref_code" | "consent">
   label: string
   required?: boolean
   error?: string
@@ -91,6 +96,109 @@ function Field({
       )}
       <FieldError id={errorId} error={error} />
     </label>
+  )
+}
+
+/**
+ * Optional salesperson referral code. Prefilled from `?ref=` on the page
+ * link, upper-cased as typed, and checked against the API after a short
+ * pause so the visitor sees "Referred by …" — or why the code is refused —
+ * before they submit. The submit checks it again either way.
+ */
+function ReferralField({ idPrefix, error }: { idPrefix: string; error?: string }) {
+  const [code, setCode] = useState("")
+  const [lookup, setLookup] = useState<ReferralLookup | null>(null)
+  const [checking, setChecking] = useState(false)
+  /* The pending check — a newer keystroke cancels it. */
+  const pendingCheck = useRef<{ timer: ReturnType<typeof setTimeout>; controller: AbortController } | null>(null)
+
+  function cancelCheck() {
+    if (!pendingCheck.current) return
+    clearTimeout(pendingCheck.current.timer)
+    pendingCheck.current.controller.abort()
+    pendingCheck.current = null
+  }
+
+  function change(value: string) {
+    const next = normaliseReferralCode(value).slice(0, REFERRAL_CODE_MAX)
+    setCode(next)
+    setLookup(null)
+    cancelCheck()
+    setChecking(!!next)
+    if (!next) return
+
+    const controller = new AbortController()
+    const timer = setTimeout(async () => {
+      const result = await lookupReferral(next, controller.signal)
+      if (controller.signal.aborted) return
+      pendingCheck.current = null
+      setLookup(result)
+      setChecking(false)
+    }, 400)
+    pendingCheck.current = { timer, controller }
+  }
+
+  /* `?ref=` is read after mount — the static page has no query string at
+     build time — and the unmount cancels a check still in flight. */
+  useEffect(() => {
+    const fromUrl = referralCodeFromUrl()
+    const timer = fromUrl ? setTimeout(() => change(fromUrl), 0) : undefined
+    return () => {
+      clearTimeout(timer)
+      cancelCheck()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, on mount
+  }, [])
+
+  /* A refusal from the submit wins; else what the lookup said. */
+  const shownError = error ?? (lookup?.status === "invalid" ? lookup.message : undefined)
+  const errorId = `${idPrefix}-ref_code-error`
+  const hintId = `${idPrefix}-ref_code-hint`
+
+  return (
+    <div className="grid content-start gap-1.5">
+      <label htmlFor={`${idPrefix}-ref_code`} className="text-sm font-medium">
+        Referral code
+      </label>
+      <span className="relative">
+        <input
+          id={`${idPrefix}-ref_code`}
+          name="ref_code"
+          value={code}
+          onChange={(event) => change(event.currentTarget.value)}
+          maxLength={REFERRAL_CODE_MAX}
+          autoComplete="off"
+          autoCapitalize="characters"
+          spellCheck={false}
+          placeholder="e.g. RAHUL-01"
+          aria-invalid={!!shownError}
+          aria-describedby={shownError ? errorId : lookup?.status === "valid" ? hintId : undefined}
+          className={cn(inputClass, shownError ? errorBorder : neutralBorder, "pr-10 uppercase")}
+        />
+        {checking && (
+          <Loader2
+            aria-hidden
+            className="absolute top-1/2 right-3 size-4 -translate-y-1/2 animate-spin text-muted-foreground"
+          />
+        )}
+      </span>
+      {shownError ? (
+        <FieldError id={errorId} error={shownError} />
+      ) : lookup?.status === "valid" ? (
+        <span
+          id={hintId}
+          aria-live="polite"
+          className="flex items-center gap-1.5 text-xs font-medium text-brand"
+        >
+          <BadgeCheck aria-hidden className="size-3.5" />
+          Referred by {lookup.referral.name}
+        </span>
+      ) : (
+        <span className="text-xs text-muted-foreground">
+          Got a code from one of our team? Enter it here.
+        </span>
+      )}
+    </div>
   )
 }
 
@@ -263,6 +371,8 @@ export function DemoRequestForm({
         />
         <FieldError id={`${idPrefix}-message-error`} error={errors.message} />
       </label>
+
+      <ReferralField idPrefix={idPrefix} error={errors.ref_code} />
 
       <div className="grid content-start gap-1.5">
         <label className="flex items-start gap-2.5 text-sm">

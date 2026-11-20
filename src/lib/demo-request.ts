@@ -35,6 +35,7 @@ export type DemoRequestField =
   | "employees"
   | "city"
   | "message"
+  | "ref_code"
   | "consent"
 
 export type DemoRequestValues = Record<Exclude<DemoRequestField, "consent">, string> & {
@@ -70,6 +71,55 @@ export type DemoRequestState = {
   retrySameKey?: boolean
 }
 
+/** Referral codes are not case-sensitive; the API stores them upper-case. */
+export const REFERRAL_CODE_MAX = 40
+
+export function normaliseReferralCode(code: string): string {
+  return code.trim().toUpperCase()
+}
+
+/** `?ref=RAHUL-01` on the page link — prefills the referral field. */
+export function referralCodeFromUrl(): string {
+  if (typeof window === "undefined") return ""
+  const ref = new URLSearchParams(window.location.search).get("ref") ?? ""
+  return normaliseReferralCode(ref).slice(0, REFERRAL_CODE_MAX)
+}
+
+/** The salesperson a referral code belongs to. */
+export type SalesReferral = { code: string; name: string }
+
+export type ReferralLookup =
+  | { status: "valid"; referral: SalesReferral }
+  | { status: "invalid"; message: string }
+  /* Network trouble: say nothing — the submit still checks the code. */
+  | { status: "unknown" }
+
+const INVALID_REFERRAL =
+  "This referral code isn't valid. Please check it with the person who referred you, or leave it empty."
+
+/** `GET /sales-referrals/:code` — a 400 means no active salesperson has it. */
+export async function lookupReferral(
+  code: string,
+  signal?: AbortSignal,
+): Promise<ReferralLookup> {
+  try {
+    const { data } = await apiClient.get<SalesReferral>(
+      endpoints.SALES_REFERRAL(normaliseReferralCode(code)),
+      { signal },
+    )
+    return { status: "valid", referral: data }
+  } catch (error) {
+    if (error instanceof AxiosError && error.response) {
+      const { status, data } = error.response
+      if (status === 400 || status === 404) {
+        const message = (data as ApiErrorBody | undefined)?.message
+        return { status: "invalid", message: message || INVALID_REFERRAL }
+      }
+    }
+    return { status: "unknown" }
+  }
+}
+
 const GENERIC_ERROR = "Something went wrong. Please try again."
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -83,6 +133,7 @@ export function readDemoRequestValues(formData: FormData): DemoRequestValues {
     employees: read("employees"),
     city: read("city"),
     message: read("message"),
+    ref_code: normaliseReferralCode(read("ref_code")),
     consent: formData.get("consent") === "on",
   }
 }
@@ -117,6 +168,9 @@ export function validateDemoRequest(values: DemoRequestValues): DemoRequestField
   if (values.city.length > 60) errors.city = "Please keep the city under 60 characters."
   if (values.message.length > 1000)
     errors.message = "Please keep the message under 1000 characters."
+
+  if (values.ref_code.length > REFERRAL_CODE_MAX)
+    errors.ref_code = `Referral codes are at most ${REFERRAL_CODE_MAX} characters.`
 
   if (!values.consent) errors.consent = "Please agree to be contacted."
 
@@ -159,6 +213,8 @@ function toBody(
       billing_cycle: topic.cycle === "annual" ? "yearly" : "monthly",
     }),
     ...(message && { message }),
+    /* Optional: the salesperson who sent the visitor. */
+    ...(values.ref_code && { ref_code: values.ref_code }),
     consent: true,
     idempotency_key: idempotencyKey,
   }
@@ -167,7 +223,7 @@ function toBody(
 type ApiErrorBody = {
   code?: string
   message?: string
-  details?: { instancePath?: string; message?: string }[] | string
+  details?: { instancePath?: string; message?: string }[] | { field?: string } | string
 }
 
 const formFields = new Set<string>([
@@ -178,6 +234,7 @@ const formFields = new Set<string>([
   "employees",
   "city",
   "message",
+  "ref_code",
   "consent",
 ])
 
@@ -220,6 +277,16 @@ function toErrorState(error: unknown): DemoRequestState {
       fieldErrors,
       error: other.length > 0 ? other.join(" ") : Object.keys(fieldErrors).length ? undefined : body.message,
     }
+  }
+
+  /* A bad referral code: `{ details: { field: "ref_code" } }` (400). */
+  if (
+    body.details &&
+    typeof body.details === "object" &&
+    !Array.isArray(body.details) &&
+    body.details.field === "ref_code"
+  ) {
+    return { fieldErrors: { ref_code: body.message || INVALID_REFERRAL } }
   }
 
   /* `message` is written for the visitor (e.g. the mobile or plan refusals). */

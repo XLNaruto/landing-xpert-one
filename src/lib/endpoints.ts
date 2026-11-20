@@ -17,6 +17,12 @@ export const endpoints = {
    * see lib/demo-request.ts.
    */
   DEMO_REQUESTS: "/demo-requests",
+  /**
+   * `GET` — public. `{ code, name }` of the active salesperson a referral
+   * code belongs to, or a 400 when there is none. Sent as `ref_code` on a
+   * demo request; the organization made from it counts toward their target.
+   */
+  SALES_REFERRAL: (code: string) => `/sales-referrals/${encodeURIComponent(code)}`,
   LEGAL: {
     /**
      * `GET /legal/{document}` — public, no sign-in. Returns
