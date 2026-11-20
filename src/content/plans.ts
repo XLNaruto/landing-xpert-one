@@ -39,8 +39,8 @@ export const plans: Plan[] = [
     featured: true,
   },
   {
-    id: "enterprise",
-    name: "Enterprise",
+    id: "custom",
+    name: "Custom plan",
     monthly: { price: "Let's talk", period: "annual contract" },
     annual: { price: "Let's talk", period: "annual contract" },
     description:

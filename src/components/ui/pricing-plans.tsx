@@ -5,6 +5,7 @@ import { Check } from "lucide-react"
 import { Stagger, StaggerItem } from "@/components/motion/stagger"
 import { Tilt } from "@/components/motion/tilt"
 import { PlanRequestDialog } from "@/components/forms/plan-request-dialog"
+import { PlanSlaDialog } from "@/components/ui/plan-sla-dialog"
 import type { BillingCycle, Plan } from "@/types"
 import { isCancelled } from "@/lib/api-client"
 import { fetchPlans } from "@/lib/plans"
@@ -185,6 +186,10 @@ export function PricingPlans({ plans: builtPlans }: { plans: Plan[] }) {
                       </li>
                     ))}
                   </ul>
+
+                  {/* Pinned under the list by the list's flex-1, so the row
+                      and the CTA line up across cards. */}
+                  <PlanSlaDialog plan={plan} />
 
                   {/* Every CTA opens the request dialog: a priced plan
                       sends a plan request, a quoted one goes to sales. */}

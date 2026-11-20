@@ -18,6 +18,7 @@ import { plans as contentPlans } from "@/content/plans"
 import { http, toApiError } from "@/lib/api-client"
 import { endpoints } from "@/lib/endpoints"
 import { env } from "@/lib/env"
+import { toSupportSlas } from "@/lib/support-sla"
 import type { Plan } from "@/types"
 
 /** One plan as `GET /plans` returns it (the fields the grid reads). */
@@ -96,9 +97,6 @@ function catalogFeatures(plan: PlanResponse): string[] {
   if (plan.is_trial && plan.trial_duration_days !== null) {
     features.push(`Free for ${plan.trial_duration_days} days`)
   }
-  if (Array.isArray(plan.support_slas) && plan.support_slas.length > 0) {
-    features.push("SLA-backed support response times")
-  }
   return features
 }
 
@@ -125,6 +123,8 @@ function toPlan(response: PlanResponse): Plan {
        bullets, when the plan has some, follow. */
     features: [...catalogFeatures(response), ...(copy?.features ?? [])],
     cta: copy?.cta ?? `Start with ${response.name}`,
+    /* Shown as the card's "Support response" row, not as a bullet. */
+    supportSlas: toSupportSlas(response.support_slas),
     featured: copy?.featured,
     request: copy?.request,
   }

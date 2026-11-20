@@ -62,6 +62,16 @@ export function Tilt({
   const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
     if (!active) return
 
+    /* React bubbles events through portals along the *component* tree, so a
+       dialog opened from inside the card (the plan request modal) still
+       reports its pointer moves here — with coordinates far outside the card,
+       which swung it hard over behind the overlay. Only the card's own DOM
+       may steer it; anything else settles it flat. */
+    if (!event.currentTarget.contains(event.target as Node)) {
+      onPointerLeave()
+      return
+    }
+
     const rect = event.currentTarget.getBoundingClientRect()
     const x = event.clientX - rect.left
     const y = event.clientY - rect.top

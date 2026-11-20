@@ -5,7 +5,7 @@
  *
  *   Book a demo (CTA form)          → request_type "demo"
  *   Start with <plan> (pricing)     → request_type "plan" + plan_id + billing_cycle
- *   Talk to sales (Enterprise)      → request_type "sales"
+ *   Talk to sales (Custom plan)     → request_type "sales"
  *
  * The site is a static export, so this runs in the visitor's browser. No key
  * is sent: the route is public, and `X-Bot-Key` belongs to the help bot only —

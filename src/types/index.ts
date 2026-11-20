@@ -30,6 +30,17 @@ export type PlanPrice = {
   period: string
 }
 
+/**
+ * One support-response promise from the plan catalog: how soon a ticket of
+ * this type and urgency is answered, in the unit it was promised in.
+ */
+export type SupportSla = {
+  ticketType: string
+  priority: string
+  value: number
+  unit: "hours" | "days"
+}
+
 export type BillingCycle = "monthly" | "annual"
 
 export type Plan = {
@@ -49,6 +60,8 @@ export type Plan = {
   request?: boolean
   /** The plan's id in the XpertOne catalog, when it came from the API. */
   catalogId?: number
+  /** Support-response promises from the catalog — the card's SLA row. */
+  supportSlas?: SupportSla[]
 }
 
 export type Faq = {
