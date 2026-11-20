@@ -24,6 +24,23 @@ export const SITE_URLS: Record<Stage, string> = {
   production: "https://xpertoneindia.com",
 }
 
+/** The site assistant's server for each stage — see lib/chat.ts. */
+export const CHAT_BOT_URLS: Record<Stage, string> = {
+  development: "https://bot.dev.xpertoneindia.com",
+  production: "https://bot.xpertoneindia.com",
+}
+
+/**
+ * The XpertOne API for each stage — the same origins app-xpert-one calls
+ * (`VITE_APP_API_URL`). Plans are read from it at build time; plan requests
+ * are POSTed to it from the visitor's browser, so the site's origin must be
+ * allowed by the API's CORS policy.
+ */
+export const API_URLS: Record<Stage, string> = {
+  development: "https://api.dev.xpertoneindia.com",
+  production: "https://api.xpertoneindia.com",
+}
+
 function readStage(): Stage {
   /* Inline `NEXT_PUBLIC_APP_STAGE=…` in the script wins over the .env file,
      which is what lets `npm run build` emit a development artefact even though
@@ -55,6 +72,12 @@ const stage = readStage()
  */
 const siteUrl = normalise(process.env.NEXT_PUBLIC_SITE_URL || SITE_URLS[stage])
 
+/* Same `||` reasoning as siteUrl: with-stage pins it to "" when unset. */
+const chatBotUrl = normalise(process.env.NEXT_PUBLIC_CHAT_BOT_URL || CHAT_BOT_URLS[stage])
+
+/* Same `||` reasoning as siteUrl: with-stage pins it to "" when unset. */
+const apiUrl = normalise(process.env.NEXT_PUBLIC_API_URL || API_URLS[stage])
+
 export const env = {
   stage,
   siteUrl,
@@ -70,10 +93,24 @@ export const env = {
    */
   analyticsId: process.env.NEXT_PUBLIC_GA_ID,
   /**
-   * Where demo requests are POSTed, from the visitor's browser. It ships in
-   * the client bundle, so it must be a public, rate-limited intake endpoint —
-   * never a private Slack/Zapier webhook. Unset: submissions are logged to the
-   * browser console instead.
+   * The site assistant's bot server. The browser calls it directly, and the
+   * server only answers origins on its ALLOWED_ORIGINS list — so the site's
+   * own host (and localhost, for `npm run dev`) must be on it.
    */
-  leadEndpoint: process.env.NEXT_PUBLIC_LEAD_ENDPOINT,
+  chatBotUrl,
+  /** XpertOne API origin — the plan catalog (lib/plans.ts) and demo/plan/sales requests (lib/demo-request.ts). */
+  apiUrl,
 } as const
+
+/**
+ * Bearer token for the XpertOne API — SERVER/BUILD ONLY.
+ *
+ * Deliberately not NEXT_PUBLIC_: Next inlines only those into the browser
+ * bundle, so in the browser `process.env.XPERTONE_API_TOKEN` is undefined and
+ * this returns nothing. A token shipped to the browser could be lifted by any
+ * visitor and used to call `/user/*` routes as that account.
+ */
+export function serverApiToken(): string | undefined {
+  if (typeof window !== "undefined") return undefined
+  return process.env.XPERTONE_API_TOKEN?.trim() || undefined
+}

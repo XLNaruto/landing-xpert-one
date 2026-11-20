@@ -1,154 +1,53 @@
 "use client"
 
-import { useState, type FormEvent } from "react"
-import { useRouter } from "next/navigation"
-import { Loader2 } from "lucide-react"
-import { readLeadValues, submitLead, type LeadState } from "@/lib/lead"
+import { useState } from "react"
+import { DemoRequestForm } from "@/components/forms/demo-request-form"
+import { RequestSuccess } from "@/components/forms/request-success"
 import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import type { DemoRequestResult } from "@/lib/demo-request"
 
-const fieldClass =
-  "w-full rounded-lg border bg-background px-3 text-sm outline-none placeholder:text-muted-foreground focus-visible:ring-3"
-
-const inputClass = `${fieldClass} h-11`
-const neutralBorder =
-  "border-border focus-visible:border-ring focus-visible:ring-ring/50"
-
+/**
+ * The CTA section's "Book a demo" form — a `demo` request. The answer is
+ * shown in place rather than on /thank-you, because what it says depends on
+ * the API's `outcome` (new, already on file, already booked).
+ */
 export function LeadForm() {
-  const router = useRouter()
-  const [state, setState] = useState<LeadState>({})
-  const [pending, setPending] = useState(false)
-  const errors = state.fieldErrors ?? {}
+  const [result, setResult] = useState<DemoRequestResult | null>(null)
+  const [formKey, setFormKey] = useState(0)
 
-  /* The site is a static export, so there is no Server Action to post to:
-     the browser validates, POSTs to the intake endpoint and navigates. */
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (pending) return
-
-    /* The inputs stay uncontrolled, so a rejected submit leaves what was
-       typed sitting in the DOM — nothing to echo back. */
-    const submitted = readLeadValues(new FormData(event.currentTarget))
-    setPending(true)
-    const result = await submitLead(submitted)
-
-    if (result.error || result.fieldErrors) {
-      setState(result)
-      setPending(false)
-      return
-    }
-
-    router.push("/thank-you")
+  if (result) {
+    return (
+      <div className="w-full max-w-md">
+        <RequestSuccess
+          result={result}
+          action={
+            <Button
+              type="button"
+              variant="glass-muted"
+              className="mt-2 h-11 rounded-full px-8 font-semibold"
+              onClick={() => {
+                setResult(null)
+                setFormKey((k) => k + 1)
+              }}
+            >
+              Send another request
+            </Button>
+          }
+        />
+      </div>
+    )
   }
 
   return (
-    /* `noValidate` turns off the browser's own validation bubbles — the
-       messages below each field are the single source of truth. */
-    <form onSubmit={handleSubmit} noValidate className="w-full max-w-md">
-      <div className="grid gap-4">
-        <label className="grid gap-1.5">
-          <span className="text-sm font-medium">
-            Your name <span className="text-destructive">*</span>
-          </span>
-          <input
-            name="name"
-            type="text"
-            required
-            aria-invalid={!!errors.name}
-            aria-describedby={errors.name ? "lead-name-error" : undefined}
-            autoComplete="name"
-            placeholder="John Doe"
-            className={cn(
-              inputClass,
-              errors.name
-                ? "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/30"
-                : neutralBorder,
-            )}
-          />
-          {errors.name && (
-            <span
-              id="lead-name-error"
-              role="alert"
-              className="text-xs font-medium text-destructive"
-            >
-              {errors.name}
-            </span>
-          )}
-        </label>
-
-        <label className="grid gap-1.5">
-          <span className="text-sm font-medium">
-            Work email <span className="text-destructive">*</span>
-          </span>
-          <input
-            name="email"
-            type="email"
-            required
-            aria-invalid={!!errors.email}
-            aria-describedby={errors.email ? "lead-email-error" : undefined}
-            autoComplete="email"
-            placeholder="you@company.com"
-            className={cn(
-              inputClass,
-              errors.email
-                ? "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/30"
-                : neutralBorder,
-            )}
-          />
-          {errors.email && (
-            <span
-              id="lead-email-error"
-              role="alert"
-              className="text-xs font-medium text-destructive"
-            >
-              {errors.email}
-            </span>
-          )}
-        </label>
-
-        <label className="grid gap-1.5">
-          <span className="text-sm font-medium">Company</span>
-          <input
-            name="company"
-            type="text"
-            autoComplete="organization"
-            placeholder="Company name"
-            className={cn(inputClass, neutralBorder)}
-          />
-        </label>
-
-        <label className="grid gap-1.5">
-          <span className="text-sm font-medium">Note</span>
-          <textarea
-            name="note"
-            rows={3}
-            placeholder="Tell us about your current attendance and payroll process"
-            className={cn(fieldClass, neutralBorder, "min-h-24 resize-y py-2.5")}
-          />
-        </label>
-      </div>
-
-      {state.error && (
-        <p role="alert" className="mt-3 text-sm text-destructive">
-          {state.error}
-        </p>
-      )}
-
-      <Button
-        type="submit"
-        variant="glass"
-        disabled={pending}
-        className="mt-4 h-11 w-full rounded-full text-base"
-      >
-        {pending && <Loader2 className="animate-spin" aria-hidden />}
-        {pending ? "Sending…" : "Book a demo"}
-      </Button>
-
-      <p className="mt-3 text-xs text-muted-foreground">
-        Required fields are marked with{" "}
-        <span className="text-destructive">*</span>. We&apos;ll get back to you
-        within one working day.
-      </p>
-    </form>
+    <div className="w-full max-w-md">
+      <DemoRequestForm
+        key={formKey}
+        idPrefix="lead"
+        topic={{ type: "demo" }}
+        submitLabel="Book a demo"
+        messagePlaceholder="Tell us about your current attendance and payroll process"
+        onSuccess={setResult}
+      />
+    </div>
   )
 }

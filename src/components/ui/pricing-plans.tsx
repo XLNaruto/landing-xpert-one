@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
+import { useEffect, useState } from "react"
 import { Check } from "lucide-react"
-import { ScrollFan, ScrollFanItem } from "@/components/motion/scroll-fan"
+import { Stagger, StaggerItem } from "@/components/motion/stagger"
 import { Tilt } from "@/components/motion/tilt"
-import { buttonVariants } from "@/components/ui/button"
+import { PlanRequestDialog } from "@/components/forms/plan-request-dialog"
 import type { BillingCycle, Plan } from "@/types"
+import { isCancelled } from "@/lib/api-client"
+import { fetchPlans } from "@/lib/plans"
 import { cn } from "@/lib/utils"
 
 const cycles: { id: BillingCycle; label: string }[] = [
@@ -14,13 +15,30 @@ const cycles: { id: BillingCycle; label: string }[] = [
   { id: "annual", label: "Yearly" },
 ]
 
+const ctaClass =
+  "mt-8 h-11 w-full rounded-full text-sm font-semibold hover:-translate-y-px"
+
 /**
  * The billing switch has to own the plan grid, since flipping it re-prices
  * every card. Kept out of the section file so the section itself — heading,
  * lead, footnote — stays a Server Component.
  */
-export function PricingPlans({ plans }: { plans: Plan[] }) {
+export function PricingPlans({ plans: builtPlans }: { plans: Plan[] }) {
   const [cycle, setCycle] = useState<BillingCycle>("monthly")
+  /* The build's plans render straight away; the live catalog replaces them
+     once it answers. A failure leaves the built ones — no spinner, no gap. */
+  const [plans, setPlans] = useState(builtPlans)
+
+  useEffect(() => {
+    const controller = new AbortController()
+    fetchPlans(controller.signal)
+      .then(setPlans)
+      .catch((error: unknown) => {
+        if (isCancelled(error)) return
+        console.warn("[plans] live catalog unavailable, keeping the built plans", error)
+      })
+    return () => controller.abort()
+  }, [])
 
   return (
     <>
@@ -32,14 +50,14 @@ export function PricingPlans({ plans }: { plans: Plan[] }) {
         <div
           role="group"
           aria-label="Billing period"
-          className="relative flex w-fit rounded-full bg-muted p-1 inset-shadow-2xs inset-ring inset-ring-border/60 dark:bg-white/5 dark:inset-ring-white/10"
+          className="relative flex w-fit rounded-full bg-muted p-1 inset-shadow-2xs inset-ring inset-ring-border/60"
         >
           <span
             aria-hidden
             className={cn(
               /* Same frosted pill as the module CTAs in Solutions: a light
                  brand tint, not a solid fill. */
-              "absolute inset-y-1 left-1 w-28 rounded-full border border-brand/25 bg-linear-to-b from-brand/25 to-brand/5 shadow-lg shadow-brand/10 ring-1 ring-white/50 backdrop-blur-md ring-inset transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] sm:w-32 dark:border-white/15 dark:from-white/20 dark:to-white/5 dark:ring-white/10",
+              "absolute inset-y-1 left-1 w-28 rounded-full border border-brand/25 bg-linear-to-b from-brand/25 to-brand/5 shadow-lg shadow-brand/10 ring-1 ring-white/50 backdrop-blur-md ring-inset transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] sm:w-32",
               cycle === "annual" && "translate-x-full",
             )}
           />
@@ -77,9 +95,9 @@ export function PricingPlans({ plans }: { plans: Plan[] }) {
         </p>
       </div>
 
-      {/* The plans are dealt out from behind the featured card as the
-          grid scrolls in, and gathered back as it leaves (see <ScrollFan>). */}
-      <ScrollFan className="mx-auto mt-12 grid max-w-lg items-stretch gap-6 lg:max-w-none lg:grid-cols-3">
+      {/* The plans fade up in sequence once, like the demo section's list,
+          and then stay put — no scroll-linked tilt in or out. */}
+      <Stagger className="mx-auto mt-12 grid max-w-lg items-stretch gap-6 lg:max-w-none lg:grid-cols-3">
         {plans.map((plan) => {
           const { price, period } = plan[cycle]
           /* "Let's talk" is a sentence, not a figure — it can't carry the
@@ -87,7 +105,7 @@ export function PricingPlans({ plans }: { plans: Plan[] }) {
           const isFigure = /\d/.test(price)
 
           return (
-            <ScrollFanItem
+            <StaggerItem
               key={plan.id}
               className={cn("h-full", plan.featured && "lg:-mt-5")}
             >
@@ -168,23 +186,19 @@ export function PricingPlans({ plans }: { plans: Plan[] }) {
                     ))}
                   </ul>
 
-                  <Link
-                    href="/#cta"
-                    className={cn(
-                      buttonVariants({
-                        variant: plan.featured ? "glass" : "glass-muted",
-                      }),
-                      "mt-8 h-11 w-full rounded-full text-sm font-semibold hover:-translate-y-px",
-                    )}
-                  >
-                    {plan.cta}
-                  </Link>
+                  {/* Every CTA opens the request dialog: a priced plan
+                      sends a plan request, a quoted one goes to sales. */}
+                  <PlanRequestDialog
+                    plan={plan}
+                    cycle={cycle}
+                    className={ctaClass}
+                  />
                 </div>
               </Tilt>
-            </ScrollFanItem>
+            </StaggerItem>
           )
         })}
-      </ScrollFan>
+      </Stagger>
     </>
   )
 }

@@ -37,7 +37,8 @@ const file = `.env.${stage}`
 /* Optional: `.env.<stage>` is untracked, so CI builds run without one. The
    hosts live in SITE_URLS in src/lib/env.ts, and the stage is on the command
    line, so a build has everything it needs. The file only carries the values
-   that can't be committed — the GA ID, the lead endpoint. */
+   that can't be committed — the GA ID, the API token. In CI those come from
+   the job's environment instead (see .github/workflows/deploy.yml). */
 let vars = {}
 try {
   vars = parseEnv(readFileSync(file, "utf8"))
@@ -52,6 +53,8 @@ vars.NEXT_PUBLIC_APP_STAGE = stage
    file Next loads for itself (always .env.production, whatever the stage)
    can't substitute the wrong domain. Empty falls back to SITE_URLS[stage]. */
 vars.NEXT_PUBLIC_SITE_URL ??= ""
+vars.NEXT_PUBLIC_CHAT_BOT_URL ??= ""
+vars.NEXT_PUBLIC_API_URL ??= ""
 
 const child = spawn("./node_modules/.bin/next", command, {
   stdio: "inherit",

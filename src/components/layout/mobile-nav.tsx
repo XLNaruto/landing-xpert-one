@@ -39,78 +39,87 @@ export function MobileNav() {
           <Logo className="h-8 shrink-0" />
         </SheetHeader>
 
-        {/* A plain list divided by hairlines — a bordered card per link made
-            four links look like four unrelated widgets. */}
-        <nav className="divide-y divide-border/70 px-5">
-          {navLinks.map((link) => (
+        {/* Everything under the header scrolls as one when a short screen
+            (a phone in landscape) can't fit it; with room to spare, the CTA
+            block still sits at the bottom via `mt-auto`. `data-lenis-prevent`
+            leaves the wheel to this panel rather than the page behind it. */}
+        <div
+          data-lenis-prevent
+          className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain"
+        >
+          {/* A plain list divided by hairlines — a bordered card per link made
+              four links look like four unrelated widgets. */}
+          <nav className="divide-y divide-border/70 px-5">
+            {navLinks.map((link) => (
+              <SheetClose
+                key={link.href}
+                nativeButton={false}
+                render={
+                  <Link
+                    href={link.href}
+                    className="group/item flex items-center justify-between gap-3 py-4 text-[1.0625rem] font-medium transition-colors hover:text-brand"
+                  >
+                    {link.label}
+                    <ChevronRight
+                      className="size-4 shrink-0 text-muted-foreground transition-all group-hover/item:translate-x-0.5 group-hover/item:text-brand"
+                      aria-hidden
+                    />
+                  </Link>
+                }
+              />
+            ))}
+          </nav>
+
+          <div className="mt-auto border-t border-border bg-muted/30 p-5">
             <SheetClose
-              key={link.href}
               nativeButton={false}
               render={
                 <Link
-                  href={link.href}
-                  className="group/item flex items-center justify-between gap-3 py-4 text-[1.0625rem] font-medium transition-colors hover:text-brand"
+                  href="/#cta"
+                  className={cn(
+                    buttonVariants({ variant: "glass" }),
+                    "h-11 w-full rounded-full text-base",
+                  )}
                 >
-                  {link.label}
-                  <ChevronRight
-                    className="size-4 shrink-0 text-muted-foreground transition-all group-hover/item:translate-x-0.5 group-hover/item:text-brand"
-                    aria-hidden
-                  />
+                  Book a demo
                 </Link>
               }
             />
-          ))}
-        </nav>
+            {/* The second CTA, not a footnote: same pill, same height, in the
+                indigo glass the desktop header already gives "See pricing" — so
+                the pair reads as primary + secondary rather than as a button with
+                a stray link under it. */}
+            <SheetClose
+              nativeButton={false}
+              render={
+                <Link
+                  href="/#pricing"
+                  className={cn(
+                    buttonVariants({ variant: "glass-alt" }),
+                    "mt-3 h-11 w-full rounded-full text-base",
+                  )}
+                >
+                  See pricing
+                </Link>
+              }
+            />
 
-        <div className="mt-auto border-t border-border bg-muted/30 p-5">
-          <SheetClose
-            nativeButton={false}
-            render={
-              <Link
-                href="/#cta"
-                className={cn(
-                  buttonVariants({ variant: "glass" }),
-                  "h-11 w-full rounded-full text-base",
-                )}
+            <div className="mt-5 grid gap-2 border-t border-border pt-4 text-sm text-muted-foreground">
+              <a
+                href={`mailto:${site.email}`}
+                className="inline-flex items-center gap-2 hover:text-foreground"
               >
-                Book a demo
-              </Link>
-            }
-          />
-          {/* The second CTA, not a footnote: same pill, same height, in the
-              indigo glass the desktop header already gives "See pricing" — so
-              the pair reads as primary + secondary rather than as a button with
-              a stray link under it. */}
-          <SheetClose
-            nativeButton={false}
-            render={
-              <Link
-                href="/#pricing"
-                className={cn(
-                  buttonVariants({ variant: "glass-alt" }),
-                  "mt-3 h-11 w-full rounded-full text-base",
-                )}
+                <Mail className="size-4 shrink-0" aria-hidden />
+                {site.email}
+              </a>
+              <a
+                href={`tel:${site.phone.replace(/\s/g, "")}`}
+                className="inline-flex items-center gap-2 hover:text-foreground"
               >
-                See pricing
-              </Link>
-            }
-          />
-
-          <div className="mt-5 grid gap-2 border-t border-border pt-4 text-sm text-muted-foreground">
-            <a
-              href={`mailto:${site.email}`}
-              className="inline-flex items-center gap-2 hover:text-foreground"
-            >
-              <Mail className="size-4 shrink-0" aria-hidden />
-              {site.email}
-            </a>
-            <a
-              href={`tel:${site.phone.replace(/\s/g, "")}`}
-              className="inline-flex items-center gap-2 hover:text-foreground"
-            >
-              <Phone className="size-4 shrink-0" aria-hidden />
-              {site.phone}
-            </a>
+                <Phone className="size-4 shrink-0" aria-hidden />
+                {site.phone}
+              </a>
+            </div>
           </div>
         </div>
       </SheetContent>

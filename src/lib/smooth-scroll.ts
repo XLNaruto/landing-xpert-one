@@ -42,7 +42,23 @@ export function scrollToElement(el: HTMLElement) {
     return
   }
 
-  lenis.scrollTo(el)
+  /* Lenis caches the page's scrollable height and only re-measures it on a
+     debounced resize. Arriving at `/#pricing` from `/privacy`, the home page
+     has just replaced a shorter one, so the cached limit is still the old
+     page's and `scrollTo` gets clamped to it — the reader stops in Solutions.
+     Re-measure first. */
+  lenis.resize()
+  lenis.scrollTo(el, {
+    /* Content above the target (images, entrance animations) can still shift
+       while the scroll is in flight. If it did, finish the last stretch. */
+    onComplete: () => {
+      const margin = parseFloat(getComputedStyle(el).scrollMarginTop) || 0
+      if (Math.abs(el.getBoundingClientRect().top - margin) > 2) {
+        lenis.resize()
+        lenis.scrollTo(el, { duration: 0.4 })
+      }
+    },
+  })
 }
 
 export function scrollToTop() {
@@ -54,5 +70,12 @@ export function scrollToTop() {
     return
   }
 
-  lenis.scrollTo(0)
+  /* Lenis drops a scrollTo without a word in two cases: when the target
+     equals the position it *thinks* it is heading to (stale if the page was
+     moved natively mid-animation, or swapped by a route change), and when it
+     is stopped (a dialog's scroll lock that hasn't been released yet). Either
+     one made the first click do nothing. Re-sync to the real scroll
+     position, and force past a leftover stop. */
+  lenis.resize()
+  lenis.scrollTo(0, { force: true })
 }

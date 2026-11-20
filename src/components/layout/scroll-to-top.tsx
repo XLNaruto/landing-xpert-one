@@ -49,7 +49,8 @@ export function ScrollToTop() {
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}
       className={cn(
-        "fixed right-5 bottom-5 z-40 size-11 rounded-full p-0 shadow-lg transition-all duration-300 md:right-8 md:bottom-8",
+        /* Stacked above the <ChatWidget> bubble (size-14) that holds the corner. */
+        "fixed right-[1.375rem] bottom-22 z-40 size-11 rounded-full p-0 shadow-lg transition-all duration-300 md:right-[2.375rem] md:bottom-25",
         visible
           ? "translate-y-0 opacity-100"
           : "pointer-events-none translate-y-2 opacity-0"

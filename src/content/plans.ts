@@ -54,5 +54,6 @@ export const plans: Plan[] = [
       "Data migration handled by our team, SLA-backed support",
     ],
     cta: "Talk to sales",
+    request: true,
   },
 ]

@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils"
 import { Logo } from "@/components/layout/logo"
 import { MobileNav } from "@/components/layout/mobile-nav"
 import { NavLinks } from "@/components/layout/nav-links"
-import { ThemeToggle } from "@/components/layout/theme-toggle"
 
 export function Header() {
   return (
@@ -15,10 +14,6 @@ export function Header() {
         <NavLinks />
 
         <div className="flex items-center gap-2">
-          {/* Hidden for now, not removed — every visitor gets the light
-              theme (DEFAULT_THEME in lib/theme.ts) until it comes back. Drop
-              `hidden` to show it again. */}
-          <ThemeToggle className="hidden" />
           <Link
             href="/#pricing"
             className={cn(

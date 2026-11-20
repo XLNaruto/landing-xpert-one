@@ -1,9 +1,13 @@
 import { ScrollHeading } from "@/components/motion/scroll-heading"
 import { WordReveal } from "@/components/motion/word-reveal"
 import { PricingPlans } from "@/components/ui/pricing-plans"
-import { plans } from "@/content/plans"
+import { loadPlans } from "@/lib/plans"
 
-export default function PricingSection() {
+/* Async so the plan catalog is read at build time (see lib/plans.ts) — the
+   exported HTML carries the prices, with no request in the browser. */
+export default async function PricingSection() {
+  const plans = await loadPlans()
+
   return (
     <section id="pricing" className="section bg-muted/30">
       <div className="section-inner">

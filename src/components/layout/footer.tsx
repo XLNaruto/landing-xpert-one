@@ -2,7 +2,6 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRight, Copyright, Mail, MapPin, Phone } from "lucide-react"
 import { Logo } from "@/components/layout/logo"
-import { SocialLinks } from "@/components/layout/social-links"
 import { footerLinks } from "@/content/nav"
 import { site } from "@/content/site"
 
@@ -73,13 +72,6 @@ export function Footer() {
               </ul>
             </nav>
           ))}
-        </div>
-
-        <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
-          <p className="text-sm text-muted-foreground">
-            Follow {site.name} for release notes and payroll-compliance updates.
-          </p>
-          <SocialLinks />
         </div>
 
         {/* Bottom bar: copyright with the product mark inline on the left,

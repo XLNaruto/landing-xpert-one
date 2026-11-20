@@ -1,18 +1,22 @@
-# Template: deploy workflow for the marketing site (static Next.js export).
+# Deploy workflow for the marketing site (static Next.js export).
+# This repo IS the site, so it lives at the repository root and SITE_DIR is '.'.
 #
-# WHERE THIS FILE GOES
-#   Copy to  .github/workflows/deploy-landing.yml  in XLNaruto/landing-xpert-one,
-#   the repo that holds the marketing site. That repo IS the site, so the site
-#   lives at the repository root and SITE_DIR stays '.'.
+#   push to main            -> dev   (npm run build)
+#   workflow_dispatch: prod -> prod  (npm run build:prod)
 #
 # ONE-TIME SETUP
 #   1. Settings -> Environments: `dev` and `prod` (prod with required reviewers).
 #   2. Secret AWS_DEPLOY_ROLE_ARN in each:
 #        dev   arn:aws:iam::473671718877:role/github-landing-dev
 #        prod  arn:aws:iam::473671718877:role/github-landing-prod
-#   3. next.config.js must produce a static export:
+#   3. Optional, per environment:
+#        variable NEXT_PUBLIC_GA_ID   G-XXXXXXXXXX (only used on prod)
+#        secret   XPERTONE_API_TOKEN  build-time API token (not needed today)
+#   4. next.config.ts produces a static export
 #        output: 'export', trailingSlash: true, images: { unoptimized: true }
-#      and the app needs a not-found page so the export emits /404.html.
+#      and src/app/not-found.tsx makes the export emit /404.html.
+#   5. The XpertOne API must allow the site's origin (CORS) for
+#      POST /demo-requests, and the bot server must list it in ALLOWED_ORIGINS.
 #
 # WHY THIS DIFFERS FROM THE SPA WORKFLOWS
 #   A static export is many real HTML files, not one shell. So:
@@ -80,15 +84,34 @@ jobs:
       - run: npm ci
         working-directory: ${{ env.SITE_DIR }}
 
-      - run: npm run build
+      # The stage is baked into the export (site URL, API / bot origins,
+      # robots + noindex, analytics), so each environment needs its own build:
+      #   dev  -> npm run build       (development, https://dev.xpertoneindia.com)
+      #   prod -> npm run build:prod  (production,  https://xpertoneindia.com)
+      # No .env.<stage> file exists in CI (gitignored); the hosts come from
+      # src/lib/env.ts and the values below come from the GitHub environment.
+      - name: Build
         working-directory: ${{ env.SITE_DIR }}
+        env:
+          # Environment *variable* (not secret) — it ships in the bundle anyway.
+          # Only honoured on the production stage; empty means no GA tag.
+          NEXT_PUBLIC_GA_ID: ${{ vars.NEXT_PUBLIC_GA_ID }}
+          # Build-time only, never inlined (not NEXT_PUBLIC_). Optional today:
+          # GET /plans is public.
+          XPERTONE_API_TOKEN: ${{ secrets.XPERTONE_API_TOKEN }}
+        run: |
+          if [ "${{ github.event.inputs.environment || 'dev' }}" = prod ]; then
+            npm run build:prod
+          else
+            npm run build
+          fi
 
       - name: Verify the export
         working-directory: ${{ env.SITE_DIR }}
         run: |
           set -euo pipefail
           test -d out || {
-            echo "::error::No out/ directory. next.config.js needs output: 'export'."
+            echo "::error::No out/ directory. next.config.ts needs output: 'export'."
             exit 1
           }
           test -f out/404.html || {
@@ -96,6 +119,19 @@ jobs:
             echo "::error::Add a not-found page so the export emits it."
             exit 1
           }
+          # Guard against shipping the wrong stage: prod must be indexable,
+          # dev must not be.
+          if [ "${{ github.event.inputs.environment || 'dev' }}" = prod ]; then
+            if grep -q 'noindex' out/index.html; then
+              echo "::error::prod build carries noindex — it was built as the development stage."
+              exit 1
+            fi
+          else
+            grep -q 'noindex' out/index.html || {
+              echo "::error::dev build is indexable — it was built as the production stage."
+              exit 1
+            }
+          fi
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4

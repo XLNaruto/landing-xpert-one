@@ -32,8 +32,8 @@ export default function HeroSection() {
           fade into the page ground at the bottom so the hero has no hard
           lower edge. All decorative; none of it holds content. */}
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute -top-40 left-[5%] size-[28rem] animate-float rounded-full bg-brand/20 blur-[120px] dark:bg-brand/30 md:size-[40rem]" />
-        <div className="absolute top-20 right-[0%] size-[24rem] animate-float rounded-full bg-accent-2/15 blur-[120px] dark:bg-accent-2/30 [animation-delay:-7s] md:size-[34rem]" />
+        <div className="absolute -top-40 left-[5%] size-[28rem] animate-float rounded-full bg-brand/20 blur-[120px] md:size-[40rem]" />
+        <div className="absolute top-20 right-[0%] size-[24rem] animate-float rounded-full bg-accent-2/15 blur-[120px] [animation-delay:-7s] md:size-[34rem]" />
         <PointerGlow />
         <NetworkCanvas className="absolute inset-0 [mask-image:radial-gradient(75%_65%_at_50%_35%,black,transparent)]" />
         <div className="absolute inset-x-0 bottom-0 h-64 bg-linear-to-t from-background to-transparent" />
@@ -124,15 +124,16 @@ export default function HeroSection() {
             />
             {/* A 1px gradient frame: the outer box is the gradient, the
                 inner one is inset by a pixel to leave just the edge. */}
-            <div className="rounded-xl bg-linear-to-b from-border via-border/40 to-brand/40 p-px dark:from-white/25 dark:via-white/5 dark:to-brand/30 md:rounded-2xl">
-              <div className="relative aspect-16/10 w-full overflow-hidden rounded-[calc(var(--radius-xl)-1px)] bg-card md:rounded-[calc(var(--radius-2xl)-1px)]">
+            <div className="rounded-xl bg-linear-to-b from-border via-border/40 to-brand/40 p-px md:rounded-2xl">
+              <div className="relative w-full overflow-hidden rounded-[calc(var(--radius-xl)-1px)] bg-card md:rounded-[calc(var(--radius-2xl)-1px)]">
                 <Image
-                  src="/media/hero/hero-dashboard.svg"
-                  alt={`The ${site.name} attendance register, showing each department's present and absent counts for the day`}
-                  fill
+                  src="/media/hero/hero-web.webp"
+                  alt={`The ${site.name} web dashboard, showing headcount, joins, exits, attendance, payroll and open tickets for the chosen period`}
+                  width={1904}
+                  height={869}
                   priority
                   sizes="(max-width: 1152px) 100vw, 1152px"
-                  className="object-cover object-top"
+                  className="h-auto w-full"
                 />
               </div>
             </div>
@@ -143,16 +144,20 @@ export default function HeroSection() {
                 travel is what separates the two planes. */}
             <Parallax
               distance={-40}
-              className="absolute -bottom-8 -left-2 hidden w-28 overflow-hidden rounded-3xl border border-border bg-card shadow-2xl dark:border-white/15 shadow-brand/20 md:block lg:-left-6 lg:w-36"
+              className="absolute -bottom-10 -left-2 hidden w-32 rounded-[1.75rem] bg-foreground p-1.5 shadow-2xl shadow-brand/30 md:block lg:-left-8 lg:w-44"
             >
-              <Image
-                src="/media/hero/hero-face-punch.svg"
-                alt="Punching in from a phone with face recognition"
-                width={320}
-                height={640}
-                sizes="144px"
-                className="h-auto w-full"
-              />
+              {/* A dark bezel around the screenshot so it reads as a device,
+                  not a second card. */}
+              <div className="overflow-hidden rounded-[1.4rem] bg-card">
+                <Image
+                  src="/media/hero/hero-app.webp"
+                  alt={`The ${site.name} mobile app, showing today's task summary and project deadlines`}
+                  width={432}
+                  height={912}
+                  sizes="176px"
+                  className="h-auto w-full"
+                />
+              </div>
             </Parallax>
           </div>
         </ScrollTilt>

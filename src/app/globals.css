@@ -2,7 +2,13 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+/* Light only. `dark:` is pinned to a `.dark` class nothing ever sets, so the
+   OS colour scheme can never switch the page. */
 @custom-variant dark (&:is(.dark *));
+
+:root {
+  color-scheme: light;
+}
 
 @theme inline {
   --color-background: var(--background);
@@ -102,46 +108,6 @@
   --sidebar-ring: #0ea5e9;
 }
 
-.dark {
-  --background: #020617;
-  --foreground: #e2e8f0;
-  --card: #0f172a;
-  --card-foreground: #e2e8f0;
-  --popover: #0f172a;
-  --popover-foreground: #e2e8f0;
-  --brand: #38bdf8;
-  --brand-foreground: #082f49;
-  --brand-muted: #0c4a6e;
-  --accent-2: #818cf8;
-  --accent-2-foreground: #c7d2fe;
-  --accent-2-muted: #312e81;
-  --primary: #38bdf8;
-  --primary-foreground: #082f49;
-  --primary-hover: #7dd3fc;
-  --secondary: #1e293b;
-  --secondary-foreground: #f1f5f9;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --accent: #1e293b;
-  --accent-foreground: #7dd3fc;
-  --destructive: #f87171;
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: #38bdf8;
-  --chart-1: #38bdf8;
-  --chart-2: #818cf8;
-  --chart-3: #4ade80;
-  --chart-4: #f472b6;
-  --chart-5: #fbbf24;
-  --sidebar: #0f172a;
-  --sidebar-foreground: #cbd5e1;
-  --sidebar-primary: #38bdf8;
-  --sidebar-primary-foreground: #082f49;
-  --sidebar-accent: #1e293b;
-  --sidebar-accent-foreground: #7dd3fc;
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: #38bdf8;
-}
 
 /* One track's worth of travel; the Marquee renders two so the seam never shows. */
 /* Entrance for above-the-fold content — see components/motion/reveal.tsx.
@@ -350,5 +316,28 @@
   }
   .section-lead {
     @apply mx-auto mt-4 max-w-2xl text-center text-base text-pretty text-muted-foreground md:text-lg;
+  }
+}
+
+/* A slim, theme-coloured scrollbar for small scroll areas (the chat panel).
+   `scrollbar-width` covers Firefox and current Chromium; the ::-webkit rules
+   cover Safari. No arrow buttons, just the thumb. */
+@utility scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--muted-foreground) 40%, transparent) transparent;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: color-mix(in oklab, var(--muted-foreground) 40%, transparent);
+  }
+  &::-webkit-scrollbar-button {
+    display: none;
   }
 }
