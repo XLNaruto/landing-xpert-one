@@ -4,7 +4,9 @@ import TickerSection from "@/components/sections/ticker-section"
 import SolutionsSection from "@/components/sections/solutions-section"
 import FeaturesSection from "@/components/sections/features-section"
 import HowItWorksSection from "@/components/sections/how-it-works-section"
-import TestimonialsSection from "@/components/sections/testimonials-section"
+/* Hidden until real customer quotes replace the placeholders — uncomment
+   this import and <TestimonialsSection /> below to bring it back. */
+// import TestimonialsSection from "@/components/sections/testimonials-section"
 import PricingSection from "@/components/sections/pricing-section"
 import FaqSection from "@/components/sections/faq-section"
 import CtaSection from "@/components/sections/cta-section"
@@ -25,7 +27,7 @@ export default function Home() {
       <SolutionsSection />
       <FeaturesSection />
       <HowItWorksSection />
-      <TestimonialsSection />
+      {/* <TestimonialsSection /> */}
       <PricingSection />
       <FaqSection />
       <CtaSection />
