@@ -1,5 +1,7 @@
 import HeroSection from "@/components/sections/hero-section"
-import LogosSection from "@/components/sections/logos-section"
+/* Hidden until real client logos replace the placeholders — uncomment
+   this import and <LogosSection /> below to bring it back. */
+// import LogosSection from "@/components/sections/logos-section"
 import TickerSection from "@/components/sections/ticker-section"
 import SolutionsSection from "@/components/sections/solutions-section"
 import FeaturesSection from "@/components/sections/features-section"
@@ -22,7 +24,7 @@ export default function Home() {
     <>
       <JsonLd data={graph(softwareApplicationSchema, faqPageSchema)} />
       <HeroSection />
-      <LogosSection />
+      {/* <LogosSection /> */}
       <TickerSection />
       <SolutionsSection />
       <FeaturesSection />

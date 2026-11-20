@@ -150,7 +150,7 @@ export default function HeroSection() {
                   not a second card. */}
               <div className="overflow-hidden rounded-[1.4rem] bg-card">
                 <Image
-                  src="/media/hero/hero-app.webp"
+                  src="/media/hero/hero-app.png"
                   alt={`The ${site.name} mobile app, showing today's task summary and project deadlines`}
                   width={432}
                   height={912}
