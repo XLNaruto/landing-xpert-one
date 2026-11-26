@@ -215,6 +215,7 @@ export function DemoRequestForm({
   messagePlaceholder,
   contextNote,
   onSuccess,
+  inDialog = false,
 }: {
   topic: DemoRequestTopic
   /** Keeps element ids unique when two forms are on the page. */
@@ -224,6 +225,8 @@ export function DemoRequestForm({
   messagePlaceholder?: string
   contextNote?: string
   onSuccess: (result: DemoRequestResult) => void
+  /** Fields scroll between the dialog's header and a pinned submit footer. */
+  inDialog?: boolean
 }) {
   const [state, setState] = useState<DemoRequestState>({})
   const [pending, setPending] = useState(false)
@@ -273,160 +276,179 @@ export function DemoRequestForm({
   return (
     /* `noValidate`: the messages under each field are the single source of
        truth, not the browser's bubbles. */
-    <form onSubmit={handleSubmit} onChange={handleChange} noValidate className="grid w-full gap-4">
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field
-          idPrefix={idPrefix}
-          name="name"
-          label="Your name"
-          required
-          maxLength={80}
-          autoComplete="name"
-          placeholder="John Doe"
-          error={errors.name}
-        />
-        <Field
-          idPrefix={idPrefix}
-          name="company"
-          label="Company"
-          required
-          maxLength={120}
-          autoComplete="organization"
-          placeholder="Company name"
-          error={errors.company}
-        />
-        <Field
-          idPrefix={idPrefix}
-          name="mobile"
-          label="Mobile number"
-          required
-          type="tel"
-          inputMode="numeric"
-          prefix="+91"
-          aria-label="Mobile number, 10 digits"
-          maxLength={10}
-          pattern="[6-9][0-9]{9}"
-          autoComplete="tel-national"
-          placeholder="9876543210"
-          /* Digits only, at most 10: a pasted "+91 98765-43210" or
-             "098765 43210" keeps its last 10 digits. */
-          onChange={(event) => {
-            const digits = event.currentTarget.value.replace(/\D/g, "")
-            event.currentTarget.value = digits.length > 10 ? digits.slice(-10) : digits
-          }}
-          error={errors.mobile}
-        />
-        <Field
-          idPrefix={idPrefix}
-          name="email"
-          label="Work email"
-          type="email"
-          maxLength={254}
-          autoComplete="email"
-          placeholder="you@company.com"
-          error={errors.email}
-        />
-
-        <div className="grid content-start gap-1.5">
-          <label htmlFor={`${idPrefix}-employees`} className="text-sm font-medium">
-            Employees
-          </label>
-          <SelectField
-            name="employees"
-            inputId={`${idPrefix}-employees`}
-            options={employeeOptions}
-            invalid={!!errors.employees}
-            errorId={`${idPrefix}-employees-error`}
-            /* Every option is a valid range; clearing it is allowed too. */
-            onChange={() => recheck("employees", undefined)}
+    <form
+      onSubmit={handleSubmit}
+      onChange={handleChange}
+      noValidate
+      className={cn("w-full", inDialog ? "flex min-h-0 flex-1 flex-col" : "grid gap-4")}
+    >
+      {/* In a dialog the fields scroll; elsewhere `contents` melts this
+          wrapper (and the footer's) into the form's grid. */}
+      <div
+        className={
+          inDialog ? "grid min-h-0 flex-1 gap-4 overflow-y-auto px-5 py-4 md:px-6" : "contents"
+        }
+      >
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field
+            idPrefix={idPrefix}
+            name="name"
+            label="Your name"
+            required
+            maxLength={80}
+            autoComplete="name"
+            placeholder="John Doe"
+            error={errors.name}
           />
-          <FieldError id={`${idPrefix}-employees-error`} error={errors.employees} />
+          <Field
+            idPrefix={idPrefix}
+            name="company"
+            label="Company"
+            required
+            maxLength={120}
+            autoComplete="organization"
+            placeholder="Company name"
+            error={errors.company}
+          />
+          <Field
+            idPrefix={idPrefix}
+            name="mobile"
+            label="Mobile number"
+            required
+            type="tel"
+            inputMode="numeric"
+            prefix="+91"
+            aria-label="Mobile number, 10 digits"
+            maxLength={10}
+            pattern="[6-9][0-9]{9}"
+            autoComplete="tel-national"
+            placeholder="9876543210"
+            /* Digits only, at most 10: a pasted "+91 98765-43210" or
+               "098765 43210" keeps its last 10 digits. */
+            onChange={(event) => {
+              const digits = event.currentTarget.value.replace(/\D/g, "")
+              event.currentTarget.value = digits.length > 10 ? digits.slice(-10) : digits
+            }}
+            error={errors.mobile}
+          />
+          <Field
+            idPrefix={idPrefix}
+            name="email"
+            label="Work email"
+            type="email"
+            maxLength={254}
+            autoComplete="email"
+            placeholder="you@company.com"
+            error={errors.email}
+          />
+
+          <div className="grid content-start gap-1.5">
+            <label htmlFor={`${idPrefix}-employees`} className="text-sm font-medium">
+              Employees
+            </label>
+            <SelectField
+              name="employees"
+              inputId={`${idPrefix}-employees`}
+              options={employeeOptions}
+              invalid={!!errors.employees}
+              errorId={`${idPrefix}-employees-error`}
+              /* Every option is a valid range; clearing it is allowed too. */
+              onChange={() => recheck("employees", undefined)}
+            />
+            <FieldError id={`${idPrefix}-employees-error`} error={errors.employees} />
+          </div>
+
+          <Field
+            idPrefix={idPrefix}
+            name="city"
+            label="City"
+            maxLength={60}
+            autoComplete="address-level2"
+            placeholder="e.g. Surat"
+            error={errors.city}
+          />
         </div>
 
-        <Field
-          idPrefix={idPrefix}
-          name="city"
-          label="City"
-          maxLength={60}
-          autoComplete="address-level2"
-          placeholder="e.g. Surat"
-          error={errors.city}
-        />
-      </div>
-
-      <label className="grid content-start gap-1.5">
-        <span className="text-sm font-medium">{messageLabel}</span>
-        <textarea
-          name="message"
-          rows={3}
-          maxLength={1000}
-          placeholder={messagePlaceholder}
-          aria-invalid={!!errors.message}
-          aria-describedby={errors.message ? `${idPrefix}-message-error` : undefined}
-          className={cn(
-            fieldClass,
-            errors.message ? errorBorder : neutralBorder,
-            "min-h-24 resize-y py-2.5",
-          )}
-        />
-        <FieldError id={`${idPrefix}-message-error`} error={errors.message} />
-      </label>
-
-      <ReferralField idPrefix={idPrefix} error={errors.ref_code} />
-
-      <div className="grid content-start gap-1.5">
-        <label className="flex items-start gap-2.5 text-sm">
-          {/* Drawn rather than native, so the tick can be white on brand
-              (the browser picks its own tick colour for `accent-color`). */}
-          <span className="relative mt-0.5 grid size-4 shrink-0 place-items-center">
-            <input
-              type="checkbox"
-              name="consent"
-              required
-              aria-invalid={!!errors.consent}
-              aria-describedby={errors.consent ? `${idPrefix}-consent-error` : undefined}
-              className={cn(
-                "peer size-4 cursor-pointer appearance-none rounded border bg-background transition-colors outline-none checked:border-brand checked:bg-brand focus-visible:ring-3 focus-visible:ring-ring/50",
-                errors.consent ? "border-destructive" : "border-border",
-              )}
-            />
-            <Check
-              aria-hidden
-              strokeWidth={3}
-              className="pointer-events-none absolute size-3 text-brand-foreground opacity-0 peer-checked:opacity-100"
-            />
-          </span>
-          <span className="text-muted-foreground">
-            I agree to be contacted about this request.{" "}
-            <Link href="/privacy" className="underline underline-offset-2 hover:text-foreground">
-              Privacy policy
-            </Link>
-            <span className="text-destructive"> *</span>
-          </span>
+        <label className="grid content-start gap-1.5">
+          <span className="text-sm font-medium">{messageLabel}</span>
+          <textarea
+            name="message"
+            rows={3}
+            maxLength={1000}
+            placeholder={messagePlaceholder}
+            aria-invalid={!!errors.message}
+            aria-describedby={errors.message ? `${idPrefix}-message-error` : undefined}
+            className={cn(
+              fieldClass,
+              errors.message ? errorBorder : neutralBorder,
+              "min-h-24 resize-y py-2.5",
+            )}
+          />
+          <FieldError id={`${idPrefix}-message-error`} error={errors.message} />
         </label>
-        <FieldError id={`${idPrefix}-consent-error`} error={errors.consent} />
+
+        <ReferralField idPrefix={idPrefix} error={errors.ref_code} />
+
+        <div className="grid content-start gap-1.5">
+          <label className="flex items-start gap-2.5 text-sm">
+            {/* Drawn rather than native, so the tick can be white on brand
+                (the browser picks its own tick colour for `accent-color`). */}
+            <span className="relative mt-0.5 grid size-4 shrink-0 place-items-center">
+              <input
+                type="checkbox"
+                name="consent"
+                required
+                aria-invalid={!!errors.consent}
+                aria-describedby={errors.consent ? `${idPrefix}-consent-error` : undefined}
+                className={cn(
+                  "peer size-4 cursor-pointer appearance-none rounded border bg-background transition-colors outline-none checked:border-brand checked:bg-brand focus-visible:ring-3 focus-visible:ring-ring/50",
+                  errors.consent ? "border-destructive" : "border-border",
+                )}
+              />
+              <Check
+                aria-hidden
+                strokeWidth={3}
+                className="pointer-events-none absolute size-3 text-brand-foreground opacity-0 peer-checked:opacity-100"
+              />
+            </span>
+            <span className="text-muted-foreground">
+              I agree to be contacted about this request.{" "}
+              <Link href="/privacy" className="underline underline-offset-2 hover:text-foreground">
+                Privacy policy
+              </Link>
+              <span className="text-destructive"> *</span>
+            </span>
+          </label>
+          <FieldError id={`${idPrefix}-consent-error`} error={errors.consent} />
+        </div>
       </div>
 
-      {state.error && (
-        <p role="alert" className="text-sm text-destructive">
-          {state.error}
-        </p>
-      )}
-
-      <Button
-        type="submit"
-        variant="glass"
-        disabled={pending || state.locked}
-        className="h-11 w-full rounded-full text-base"
+      <div
+        className={
+          inDialog ? "grid shrink-0 gap-3 border-t border-border px-5 py-4 md:px-6" : "contents"
+        }
       >
-        {pending ? <Loader2 className="animate-spin" aria-hidden /> : <Send aria-hidden />}
-        {pending ? "Sending…" : submitLabel}
-      </Button>
+        {state.error && (
+          <p role="alert" className="text-sm text-destructive">
+            {state.error}
+          </p>
+        )}
 
-      <p className="text-xs text-muted-foreground">
-        Required fields are marked with <span className="text-destructive">*</span>.
-        Add an email to get a confirmation.
-      </p>
+        <Button
+          type="submit"
+          variant="glass"
+          disabled={pending || state.locked}
+          className="h-11 w-full rounded-full text-base"
+        >
+          {pending ? <Loader2 className="animate-spin" aria-hidden /> : <Send aria-hidden />}
+          {pending ? "Sending…" : submitLabel}
+        </Button>
+
+        <p className="text-xs text-muted-foreground">
+          Required fields are marked with <span className="text-destructive">*</span>.
+          Add an email to get a confirmation.
+        </p>
+      </div>
     </form>
   )
 }

@@ -61,30 +61,33 @@ export function PlanRequestDialog({
         {plan.cta}
       </DialogTrigger>
 
+      {/* Header and submit footer stay put; only the fields scroll between them. */}
       <DialogContent
         /* Lenis would otherwise swallow the wheel inside a tall dialog. */
         data-lenis-prevent
-        className="max-h-[calc(100dvh-2rem)] overflow-y-auto p-5 sm:max-w-lg md:p-6"
+        className="flex max-h-[calc(100dvh-2rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-lg"
       >
         {result ? (
-          <RequestSuccess
-            result={result}
-            titleAs={DialogTitle}
-            descriptionAs={DialogDescription}
-            action={
-              <DialogClose
-                className={cn(
-                  buttonVariants({ variant: "glass-muted" }),
-                  "mt-2 h-11 rounded-full px-8 font-semibold",
-                )}
-              >
-                Done
-              </DialogClose>
-            }
-          />
+          <div className="overflow-y-auto p-5 md:p-6">
+            <RequestSuccess
+              result={result}
+              titleAs={DialogTitle}
+              descriptionAs={DialogDescription}
+              action={
+                <DialogClose
+                  className={cn(
+                    buttonVariants({ variant: "glass-muted" }),
+                    "mt-2 h-11 rounded-full px-8 font-semibold",
+                  )}
+                >
+                  Done
+                </DialogClose>
+              }
+            />
+          </div>
         ) : (
           <>
-            <DialogHeader className="pr-8">
+            <DialogHeader className="shrink-0 border-b border-border pt-5 pr-12 pb-4 pl-5 md:pt-6 md:pl-6">
               <DialogTitle className="text-lg font-semibold">
                 {topic.type === "plan" ? `Start with ${plan.name}` : "Talk to sales"}
               </DialogTitle>
@@ -104,6 +107,7 @@ export function PlanRequestDialog({
               messageLabel="What do you need?"
               messagePlaceholder="Companies, branches, integrations, deployment…"
               onSuccess={setResult}
+              inDialog
             />
           </>
         )}
